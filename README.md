@@ -46,6 +46,7 @@ on Windows:
 ```bash
 venv\Scripts\activate
 ```
+When the environment is activated:
 ```bash
 pip install -r requirements.txt
 ```
