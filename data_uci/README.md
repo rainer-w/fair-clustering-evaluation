@@ -1,8 +1,8 @@
 # Datasets
 
-The datasets used in the experiments are not included in this repository.
+The UCI datasets used in the experiments are not included in this repository due to their size.
 
-Please download the datasets from the following sources:
+Please download them from the following sources:
 
 - Adult: https://archive.ics.uci.edu/dataset/2/adult
 - Bank Marketing: https://archive.ics.uci.edu/dataset/222/bank+marketing
