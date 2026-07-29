@@ -5,11 +5,11 @@ if __name__ =="__main__":
     NUM_CLUSTERS = 5
     RATIO_NOISE = 0.15
     D = 2
-    N = 500
+    N = 1000
     G = 2
-    SEED = 33
+    SEED = 36
     DISTR = [[0.9,0.1],[0.1,0.9]]
-    CORE_NUM = 90
+    CORE_NUM = [15]*NUM_CLUSTERS
     N=500
     fairdegen = DEBRIS(
         dim=D,
@@ -18,9 +18,10 @@ if __name__ =="__main__":
         core_num=CORE_NUM,
         ratio_noise=RATIO_NOISE,
         g=G,
-        distr = DISTR
+        distr = DISTR, 
+        clu_ratios= [0.5, 0.1, 0.1, 0.2, 0.1]
     )
-    fairdata = fairdegen.generate_data(N)
+    fairdata = fairdegen.generate_data(N,seed=SEED)
     X_pca, pca = _project_if_needed(fairdegen.get_features_wo_sensitive())
 
 
