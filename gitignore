@@ -9,6 +9,7 @@ data_uci/Bank
 data_uci/Census
 data_uci/Creditcard
 data_uci/Diabetes
+!data_uci/README.md
 # C extensions
 *.so
 

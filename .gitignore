@@ -2,7 +2,7 @@
 __pycache__/
 *.py[codz]
 *$py.class
-
+!data_uci/README.md
 results/
 figures/*.pdf
 data_uci/Adult
