@@ -12,7 +12,7 @@ Please download the datasets from the following sources:
 
 After downloading and extracting the datasets, organize the files according to the following structure:
 
-
+```text
 data_uci/
 ├── Adult/
 │ └── adult.data
@@ -24,6 +24,6 @@ data_uci/
 │ └── creditcard_data.xls
 └── Diabetes/
 └── diabetic_data.csv
-
+´´´
 
 The experiments expect the datasets to be available at these locations.
