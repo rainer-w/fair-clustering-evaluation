@@ -96,12 +96,14 @@ python -m experiments.realworld.run_all_uci
 ```
 The UCI datasets are not included due to their size. To reproduce the experiments, download and organize them according to the instructions in [data_uci/README.md](data_uci/README.md).
 Generated outputs, including experiment results, CSV files, and generated figures, are stored in:
-´´´
+
+```text
 results/
 ├── debris/
 ├── synthetic/
 └── uci/
 ```
+
 Additional figures can then be generated using the scripts in:
 
 ```
