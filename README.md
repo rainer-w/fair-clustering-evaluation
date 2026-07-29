@@ -81,6 +81,7 @@ The example dataset above was generated with these parameters:
 | Random seed | 36 |
 | Sensitive attribute distribution | `[[0.9, 0.1], [0.1, 0.9]]` |
 | Cluster ratios (densities) | [0.5, 0.1, 0.1, 0.2, 0.1] |
+
 Unlike standard Gaussian synthetic benchmarks, DEBRIS generates non-convex density structures where clustering quality and fairness can be evaluated under more realistic geometric assumptions.
 ---
 
@@ -95,12 +96,12 @@ python -m experiments.realworld.run_all_uci
 ```
 The UCI datasets are not included due to their size. To reproduce the experiments, download and organize them according to the instructions in [data_uci/README.md](data_uci/README.md).
 Generated outputs, including experiment results, CSV files, and generated figures, are stored in:
-
+´´´
 results/
 ├── debris/
 ├── synthetic/
 └── uci/
-
+```
 Additional figures can then be generated using the scripts in:
 
 ```
