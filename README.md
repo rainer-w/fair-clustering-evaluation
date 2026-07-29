@@ -31,8 +31,8 @@ src/            Core implementation
 The experiments were tested and developed using Python 3.9. \
 Clone the repository:
 ```bash
-git clone https://github.com/<username>/<repository>.git
-cd <repository>
+git clone https://github.com/rainer-w/fair-clustering-evaluation.git
+cd fair-clustering-evaluation
 ```
 Create a virtual environment for the project:
 ```bash
