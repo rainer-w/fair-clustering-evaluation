@@ -34,7 +34,7 @@ Clone the repository:
 git clone https://github.com/<username>/<repository>.git
 cd <repository>
 ```
-Install the required dependencies:
+Create a virtual environment for the project:
 ```bash
 python -m venv venv
 ```
@@ -46,7 +46,7 @@ on Windows:
 ```bash
 venv\Scripts\activate
 ```
-When the environment is activated:
+When the environment is activated, install the required dependencies:
 ```bash
 pip install -r requirements.txt
 ```
