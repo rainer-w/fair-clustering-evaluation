@@ -28,7 +28,7 @@ src/            Core implementation
 ---
 
 # Installation
-The experiments were tested and developed using Python 3.9.
+The experiments were tested and developed using Python 3.9. \
 Clone the repository:
 ```bash
 git clone https://github.com/<username>/<repository>.git
