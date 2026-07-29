@@ -1,14 +1,17 @@
 # Are We Evaluating Fair Clustering Fairly? Benchmarks, Protocols and Data Generation for Non-Convex Fair Clustering
 
-Fair clustering research has largely relied on benchmark datasets originally developed for supervised learning tasks. Despite the rapid growth of the field, there is still no established benchmark suite or standardized evaluation protocol for fair clustering.
+Fair clustering evaluation currently lacks standardized benchmarks and protocols. Existing evaluations rely heavily on a small number of datasets originally developed for supervised learning, resulting in inconsistent preprocessing and incomparable experimental settings. This repository provides a benchmark study of fair clustering evaluation, including a fairness-aware model selection protocol and a synthetic data generator for density-based clustering scenarios.
+---
 
-As a result, published results are often based on a small number of reused datasets, inconsistent preprocessing choices, and incomparable experimental settings, making it difficult to assess real progress. In this work, we present a benchmark study of fair clustering evaluation with a focus on density-based methods.
+# Artifact Overview
 
-We analyze commonly used benchmark datasets and evaluation protocols and identify major limitations in current evaluation practice. We further introduce a fairness-aware model selection protocol that jointly considers clustering quality and fairness when selecting hyperparameters for standard clustering algorithms. Our experiments show that this stronger baseline frequently achieves fairness comparable to or better than dedicated fair clustering methods while maintaining competitive clustering quality.
+This repository provides:
 
-To enable systematic evaluation beyond existing benchmarks, we present **DEBRIS**, a synthetic data generator for density-based clusters with controllable sensitive attribute distributions and varying levels of difficulty. DEBRIS generates non-convex cluster structures, supports configurable dimensionality, density, noise, and subgroup organization, and provides both density-based and fairness-oriented reference labelings.
-
-We hope that our benchmark study, evaluation protocol, and synthetic generator contribute to more reliable and reproducible evaluation of future fair clustering methods.
+- benchmark datasets and evaluation protocols for fair clustering
+- implementations of evaluated clustering methods
+- UCI benchmark experiment scripts
+- the DEBRIS synthetic data generator
+- scripts to reproduce paper figures and tables
 
 ---
 
@@ -25,13 +28,60 @@ src/            Core implementation
 ---
 
 # Installation
-
+The experiments were tested and developed using Python 3.9.
+Clone the repository:
+```bash
+git clone https://github.com/<username>/<repository>.git
+cd <repository>
+```
 Install the required dependencies:
-
+```bash
+python -m venv venv
+```
+On Linux/macOS: 
+```bash
+source venv/bin/activate
+```
+on Windows: 
+```bash
+venv\Scripts\activate
+```
 ```bash
 pip install -r requirements.txt
 ```
+After installation, you may verify the setup by running the DEBRIS example: 
+```bash
+python -m figures.generate_debris_example
+```
+---
+## Quick Start / Example Usage: DEBRIS Generator
 
+<p align="center">
+  <img src="docs/images/fair_plot.png" width="30%">
+  <img src="docs/images/gt_clusters.png" width="30%">
+  <img src="docs/images/density_clusters.png" width="30%">
+</p>
+
+<p align="center">
+Example DEBRIS output: generated fair clusters, density-based ground truth, and subgroup-aware cluster assignments.
+</p>
+
+DEBRIS can be used to generate synthetic density-based clusters with controllable sensitive attribute distributions.
+
+The example dataset above was generated with these parameters: 
+
+| Parameter | Value |
+|-----------|-------|
+| Number of samples | 1000 |
+| Number of clusters | 5 |
+| Dimensionality | 2 |
+| Sensitive attribute groups | 2 |
+| Noise ratio | 0.15 |
+| Number of cores | 15 per cluster |
+| Random seed | 36 |
+| Sensitive attribute distribution | `[[0.9, 0.1], [0.1, 0.9]]` |
+| Cluster ratios (densities) | [0.5, 0.1, 0.1, 0.2, 0.1] |
+Unlike standard Gaussian synthetic benchmarks, DEBRIS generates non-convex density structures where clustering quality and fairness can be evaluated under more realistic geometric assumptions.
 ---
 
 # Reproducing the Paper
@@ -43,18 +93,30 @@ For example, to reproduce the UCI benchmark experiments:
 ```bash
 python -m experiments.realworld.run_all_uci
 ```
+The UCI datasets are not included due to their size. To reproduce the experiments, download and organize them according to the instructions in [data_uci/README.md](data_uci/README.md).
+Generated outputs, including experiment results, CSV files, and generated figures, are stored in:
 
-Generated outputs are stored in:
-
-```
 results/
-```
+├── debris/
+├── synthetic/
+└── uci/
 
-Figures can then be generated using the scripts in:
+Additional figures can then be generated using the scripts in:
 
 ```
 figures/
 ```
+# Paper Reproduction Guide
+
+| Paper Component | Repository Location |
+|---|---|
+| UCI experiments | `experiments/realworld/` |
+| DEBRIS experiments | `experiments/debris/` |
+| Other synthetic experiments | `experiments/synthetic/` |
+| DEBRIS generator | `src/generators/debris.py` |
+| Figure generation | `figures/` |
+| Evaluation metrics | `src/evaluation/` |
+
 
 ---
 
@@ -93,36 +155,8 @@ distr = [[0.9, 0.1],
 
 which creates two subgroups dominated by different sensitive attribute values.
 
----
-## Example Usage: DEBRIS Generator
 
-<p align="center">
-  <img src="docs/images/fair_clusters.png" width="30%">
-  <img src="docs/images/gt_clusters.png" width="30%">
-  <img src="docs/images/density_clusters.png" width="30%">
-</p>
 
-DEBRIS can be used to generate synthetic density-based clusters with controllable sensitive attribute distributions.
-
-The following example generates a dataset with:
-
-| Parameter | Value |
-|-----------|-------|
-| Number of samples | 1000 |
-| Number of clusters | 5 |
-| Dimensionality | 2 |
-| Sensitive attribute groups | 2 |
-| Noise ratio | 0.15 |
-| Number of cores | 15 per cluster |
-| Random seed | 36 |
-| Sensitive attribute distribution | `[[0.9, 0.1], [0.1, 0.9]]` |
-| Cluster ratios (densities) | `[[0.5, 0.1, 0.1, 0.2, 0.1]]` |
-
-Run the example:
-
-```bash
-python -m figures.generate_debris_example
-```
 ---
 # Citation
 
