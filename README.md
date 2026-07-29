@@ -64,7 +64,9 @@ python -m figures.generate_debris_example
 </p>
 
 <p align="center">
+<sub>
 Example DEBRIS output: generated fair clusters, density-based ground truth, and subgroup-aware cluster assignments.
+</sub>
 </p>
 
 DEBRIS can be used to generate synthetic density-based clusters with controllable sensitive attribute distributions.
