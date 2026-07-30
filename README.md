@@ -113,7 +113,7 @@ results/
 Since the experiments using DEBRIS are extensive, averaging the results of all evaluated algorithms over five different seeds per dataset, it is recommended to run them separately/ in parallel due to runtime. \
 For example, to produce the results for varying the imbalance within the subgroups of clusters: 
 ```bash
-python -m experiments.debris.7_Varying_Imbalance 
+python -m experiments.debris.E07_Varying_Imbalance 
 ```
 But, you may run all experiments at once using: 
 ```bash
