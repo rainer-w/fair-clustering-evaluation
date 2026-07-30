@@ -7,8 +7,7 @@ Fair clustering evaluation currently lacks standardized benchmarks and protocols
 
 This repository provides:
 
-- benchmark datasets and evaluation protocols for fair clustering
-- implementations of evaluated clustering methods
+- python implementations of evaluated clustering methods and metrics
 - UCI benchmark experiment scripts
 - the DEBRIS synthetic data generator
 - scripts to reproduce paper figures and tables
