@@ -233,7 +233,9 @@ def plot_line(
     xlabel=None,
     categorical=False, 
     groundtruth_results = None, 
-    include_std = False
+    include_std = False, 
+    logaxis = None, # can be "x", "y", "xy"
+    x_filter = None
 ):
 
     plt.rcParams.update({
@@ -290,7 +292,15 @@ def plot_line(
         "GT_Fair": "#666666",
         "GT_Unfair": "#bbbbbb",
     }
+    results = results.copy()
 
+    if x_filter is not None:
+        results = results[results[x].isin(x_filter)]
+
+        if groundtruth_results is not None:
+            groundtruth_results = groundtruth_results[
+                groundtruth_results[x].isin(x_filter)
+            ]
     #define ordering
     x_values = sorted(results[x].unique())
 
@@ -307,7 +317,13 @@ def plot_line(
         for metric in [ "runtime", "disco","balance"]:
 
             fig, ax = plt.subplots(figsize=(14, 12), constrained_layout = True)
-
+            plt_map = {
+                None : ax.plot, 
+                "x" : ax.semilogx, 
+                "y" : ax.semilogy, 
+                "xy" : ax.loglog
+            }
+            custom_plot = plt_map[logaxis]
             #for method in results["method"].unique():
             for method in method_order:
                 if method == "GroundTruth" or method not in results["method"].values: #
@@ -325,7 +341,7 @@ def plot_line(
                     xs = subdf[x].values
 
                 ys = subdf[metric].values
-                ax.plot(
+                custom_plot(
                     xs,
                     ys,
                     label=method,
@@ -350,7 +366,7 @@ def plot_line(
               #  print("gt results ", groundtruth_results)
             if groundtruth_results is not None and metric == "balance": 
 
-                ax.plot(
+                custom_plot(
                     xs, 
                     groundtruth_results["balance_fair"],
                     marker=method_markers["GT_Fair"],
@@ -371,7 +387,7 @@ def plot_line(
                         color=method_colors[method],
                         alpha=0.15
                     )
-                ax.plot(
+                custom_plot(
                     xs, 
                     groundtruth_results["balance_unfair"],
                     marker=method_markers["GT_Unfair"],

@@ -128,7 +128,7 @@ def main_7(run=True,plot=True):
     gt_A = gt_results[gt_results["distr_index"] < x_split].copy() 
     gt_B = gt_results[gt_results["distr_index"] >= x_split].copy() 
 
-    plot_line(avg_A, x="distr_index", path=f"{base_path}A_", categorical=True, groundtruth_results=gt_A, include_std=True)
-    plot_line(avg_B, x="distr_index", path=f"{base_path}B_", categorical=True, groundtruth_results=gt_B, include_std=True)
+    plot_line(avg_A, x="distr_index", tick_labels=["A0", "A1", "A2", "A3", "A4"], path=f"{base_path}A_", categorical=True, groundtruth_results=gt_A, include_std=True, xlabel="Subgroup Imbalance Level")
+    plot_line(avg_B, x="distr_index",tick_labels=["B0", "B1", "B2", "B3", "B4"], path=f"{base_path}B_", categorical=True, groundtruth_results=gt_B, include_std=True, xlabel="Subgroup Imbalance Level")
 if __name__ == "__main__":
     main_7()

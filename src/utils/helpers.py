@@ -194,6 +194,6 @@ def aggregate_over_seeds(
     gt_summary = mean_gt.merge( 
         std_gt, on=[main_col], how="left"
     )
-    gt_summary = pd.concat([mean_gt, std_gt], axis=1)
+   # gt_summary = pd.concat([mean_gt, std_gt], axis=1)
 
     return merged, gt_summary
