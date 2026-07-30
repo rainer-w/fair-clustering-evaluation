@@ -255,7 +255,7 @@ def search_kmeans_all(
         results.append(row)
     return pd.DataFrame(results)
 
-from methods.Fairlet import Fairlet
+from src.methods.Fairlet import Fairlet
 
 
 def compute_fairlets_threshold(X,sensitive,k=5):
@@ -340,7 +340,7 @@ def search_fairlets_all(
     return pd.DataFrame(results)
 
 
-from methods.BackursFair import BackursFairClustering
+from src.methods.BackursFair import BackursFairClustering
 
 def search_backurs_all(
         X,

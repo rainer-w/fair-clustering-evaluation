@@ -16,7 +16,7 @@ import numpy as np
 from sklearn.metrics import silhouette_samples
 from sklearn.neighbors import KDTree
 
-from dc_dist.dctree import DCTree
+from src.dc_dist.dctree import DCTree
 # from SHiP import SHiP
 
 
