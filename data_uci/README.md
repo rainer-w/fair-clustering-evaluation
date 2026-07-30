@@ -23,7 +23,7 @@ data_uci/
 ├── Creditcard/
 │ └── creditcard_data.xls
 └── Diabetes/
-└── diabetic_data.csv
-´´´
+│ └── diabetic_data.csv
+```
 
 The experiments expect the datasets to be available at these locations.
