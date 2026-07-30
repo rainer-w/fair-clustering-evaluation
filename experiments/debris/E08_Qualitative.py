@@ -4,7 +4,7 @@ from src.generators.debris import DEBRIS
 import pandas as pd
 import numpy as np
 from pathlib import Path
-def run_8(path,dim,clunum,seed,core_num,ratio_noise,g,distr, n, fairlets_t, gap,alpha, run = True):
+def run_8(path,dim,clunum,seed,core_num,ratio_noise,g,distr, n, fairlets_t, gap=2,alpha=1, run = True):
   #  cluster_ratios = np.random.dirichlet(np.ones(clunum) * alpha)
     fairdegen = DEBRIS(
         dim = dim, 
