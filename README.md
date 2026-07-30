@@ -116,7 +116,7 @@ But, you may run all experiments at once using:
 ```bash
 python -m experiments.debris.run_all_debris
 ```
-The results for each individual seed will be stored in a subfolder, and the averaged results directly in results/debris/Experiment7. 
+The results for each individual seed of a given experiment N will be stored in a subfolder, and the averaged values directly in their correspond folder results/debris/ExperimentN. 
 
 Additional figures from the paper can then be generated using the scripts in:
 
