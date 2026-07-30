@@ -45,6 +45,10 @@ on Windows:
 ```bash
 venv\Scripts\activate
 ```
+or on Git Bash: 
+```bash
+source venv/Scripts/activate
+```
 When the environment is activated, install the required dependencies:
 ```bash
 pip install -r requirements.txt
