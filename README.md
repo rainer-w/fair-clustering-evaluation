@@ -181,3 +181,10 @@ If you use this repository or DEBRIS in your research, please cite:
 ```
 TODO: add BibTeX entry
 ```
+
+---
+
+# Acknowledgements
+
+The implementation of the random-walk based cluster generation in DEBRIS and data sampling is based on the code from the DENSIRED project: 
+https://github.com/PhilJahn/DENSIRED
