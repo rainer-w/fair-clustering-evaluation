@@ -7,7 +7,7 @@
 # Authors: Flavio Chierichetti, Ravi Kumar, Silvio Lattanzi, Sergei Vassilvitskii
 # Link: https://arxiv.org/abs/1802.05733
 
-
+# input parameters adapted by Rainer Wöß
 
 import time
 import matplotlib.pyplot as plt
