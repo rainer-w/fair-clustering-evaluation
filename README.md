@@ -90,7 +90,7 @@ Unlike standard Gaussian synthetic benchmarks, DEBRIS generates non-convex densi
 
 # Reproducing the Paper
 
-All experiments can be executed from the repository root.
+All experiments should be executed from the repository root.
 
 For example, to reproduce the UCI benchmark experiments:
 
@@ -107,7 +107,18 @@ results/
 └── uci/
 ```
 
-Additional figures can then be generated using the scripts in:
+Since the experiments using DEBRIS are extensive, averaging the results of all evaluated algorithms over five different seeds per dataset, it is recommended to run them separately/ in parallel due to runtime. \
+For example, to produce the results for varying the imbalance within the subgroups of clusters: 
+```bash
+python -m experiments.debris.7_Varying_Imbalance 
+```
+But, you may run all experiments at once using: 
+```bash
+python -m experiments.debris.run_all_debris
+```
+The results for each individual seed will be stored in a subfolder, and the averaged results directly in results/debris/Experiment7. 
+
+Additional figures from the paper can then be generated using the scripts in:
 
 ```
 figures/
