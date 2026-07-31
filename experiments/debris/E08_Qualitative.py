@@ -146,6 +146,7 @@ def main_8(run=True,plot=True):
                                path=f"{path}Setting_{i}_" )
             plot_filtered_skyline(stacked_map[i],x="disco",x_threshold=-1.0, path=f"{path}Setting_{i}_",
                                   xlim = (-1,1), ylim = (0,1))
+            plot_filtered_skyline(stacked_map[i], x="n_clusters", path=f"results/Experiment8/Setting_{i}_all_n_clusters_",xlim=0,ylim=0)
 
 if __name__ == "__main__":
     main_8()
