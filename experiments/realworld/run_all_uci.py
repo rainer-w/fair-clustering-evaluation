@@ -148,11 +148,11 @@ def main_all_uci(run=True,plot=True):
         if plot:
             df = pd.read_csv(f"results/realworld/{dataset_name}/opt_results.csv")
             score_df = df[df["criterion"] == "score"].copy()
-            plot_filtered_skyline(score_df, x="n_clusters", path=f"results/{dataset_name}/optscore_n_clusters-")
-            plot_filtered_skyline(score_df, x="disco", path=f"results/{dataset_name}/optscore_disco-")
+            plot_filtered_skyline(score_df, x="n_clusters", path=f"results/realworld/{dataset_name}/optscore_n_clusters-")
+            plot_filtered_skyline(score_df, x="disco", path=f"results/realworld/{dataset_name}/optscore_disco-")
             disco_df = df[df["criterion"] == "disco"].copy()
-            plot_filtered_skyline(disco_df, x="n_clusters", path=f"results/{dataset_name}/optdisco_n_clusters-")
-            plot_filtered_skyline(disco_df, x="disco", path=f"results/{dataset_name}/optdisco_disco-")
+            plot_filtered_skyline(disco_df, x="n_clusters", path=f"results/realworld/{dataset_name}/optdisco_n_clusters-")
+            plot_filtered_skyline(disco_df, x="disco", path=f"results/realworld/{dataset_name}/optdisco_disco-")
 
 if __name__ == "__main__": 
     main_all_uci()
