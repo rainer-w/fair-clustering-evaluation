@@ -144,22 +144,49 @@ def run_fairness_awareness(base_path:str, dataset_name : str, mode:str):
 
     merged.to_csv(f"{base_path}mean_std_results.csv", index=False)
 
-def main_fairness_awareness(run=True,plot=True): 
+dataset_xlim_disco = {
+    "Adult": [0.1,0.65], 
+    "Bank": [0.3, 1.0], 
+    "Census": [0.2,0.75], 
+    "Creditcard": [0.15,0.75],
+    "Diabetes": [0.75,1.0]
+}
+dataset_ylim_balance = {
+    "Adult": [0.55,1.0], 
+    "Bank": [0.45,1.0], 
+    "Census": [0.2,1.0], 
+    "Creditcard": [0.6,1.0],
+    "Diabetes": [0.1,1.0]
+}
+def main_fairness_awareness(run=False,plot=True): 
 
     for dataset_name in ["Adult", "Bank", "Census", "Creditcard", "Diabetes"]:
         for mode in ["aware", "unaware"]:
             base_path = f"results/realworld/fairness-awareness/{dataset_name}/{mode}/"
             if run:
                 run_fairness_awareness(base_path=base_path, dataset_name=dataset_name,mode=mode)
-        
+            suffix = "FA" if mode == "aware" else "FU"
             if plot:
                 df = pd.read_csv(f"{base_path}opt_results.csv")
-                score_df = df[df["criterion"] == "score"].copy()
-                plot_filtered_skyline(score_df, x="n_clusters", path=f"{base_path}optscore_n_clusters-")
-                plot_filtered_skyline(score_df, x="disco", path=f"{base_path}optscore_disco-")
-                disco_df = df[df["criterion"] == "disco"].copy()
-                plot_filtered_skyline(disco_df, x="n_clusters", path=f"{base_path}optdisco_n_clusters-")
-                plot_filtered_skyline(disco_df, x="disco", path=f"{base_path}optdisco_disco-")
+                filter_df = df.copy()
+                if suffix == "FA": 
+                    filter_df = filter_df[filter_df["criterion"] == "score"]
+                elif suffix == "FU": 
+                    filter_df = filter_df[filter_df["criterion"] == "disco"]
+                plot_filtered_skyline(filter_df, x="n_clusters", path=f"{base_path}{dataset_name}_{suffix}_nclusters_", title_inline=f"{dataset_name} {suffix}")
+                plot_filtered_skyline(filter_df, x="disco", path=f"{base_path}{dataset_name}_{suffix}_",  title_inline=f"{dataset_name} {suffix}",
+                                    xlim = dataset_xlim_disco[dataset_name], ylim=dataset_ylim_balance[dataset_name])
+               # if mode == "aware":
+               #     score_df = df[df["criterion"] == "score"].copy()
+               #     plot_filtered_skyline(score_df, x="n_clusters", path=f"{base_path}optscore_n_clusters-", title_inline=f"{dataset_name} {suffix}")
+               #     plot_filtered_skyline(score_df, x="disco", path=f"{base_path}{dataset_name}_aware_",  title_inline=f"{dataset_name} {suffix}",
+               #                         xlim = dataset_xlim_disco[dataset_name], ylim=dataset_ylim_balance[dataset_name])
+               # if mode == "unaware":
+               #     disco_df = df[df["criterion"] == "disco"].copy()
+               #     plot_filtered_skyline(disco_df, x="n_clusters", path=f"{base_path}optdisco_n_clusters-", title_inline=f"{dataset_name} {suffix}")
+               #     plot_filtered_skyline(disco_df, x="disco", path=f"{base_path}{dataset_name}_unaware_", title_inline=f"{dataset_name} {suffix}",
+               #                         xlim = dataset_xlim_disco[dataset_name], ylim=dataset_ylim_balance[dataset_name])
 
 if __name__ == "__main__":
     main_fairness_awareness()
+

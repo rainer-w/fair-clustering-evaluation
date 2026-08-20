@@ -84,7 +84,8 @@ def plot_filtered_skyline(
     path="plots/",
     annotate=False, 
     xlim=None, 
-    ylim=None
+    ylim=None,
+    title_inline=None
 ):
 
     plt.rcParams.update({
@@ -208,7 +209,14 @@ def plot_filtered_skyline(
     )
 
     plt.close(fig_legend)
-
+    if title_inline: 
+        ax.text(
+            0.02, 0.02, 
+            title_inline, 
+            transform=ax.transAxes,
+            ha="left",
+            va= "bottom"
+        )
 
     fig.savefig(
         f"{path}skyline.pdf",
