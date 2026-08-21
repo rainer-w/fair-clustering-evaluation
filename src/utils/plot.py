@@ -255,15 +255,15 @@ def plot_line(
         "ytick.labelsize": 40
     })
     method_order = [
+        "GT_Fair", 
+        "GT_Unfair"
+        "DBSCAN", 
+        "HDBSCAN", 
         "KMeans", 
+        "FairDen", 
+        "FairSC", 
         "Fairlets", 
         "SFC",
-        "DBSCAN", 
-        "FairDen", 
-        "GT_Fair", 
-        "HDBSCAN", 
-        "FairSC", 
-        "GT_Unfair"
     ]
     method_markers = {
         "DBSCAN": "^",
@@ -452,7 +452,7 @@ def plot_line(
                 ordered_handles,
                 ordered_labels,
                 loc="center",
-                ncol=3,
+                ncol=5,
                 frameon=False,
                 fontsize=16,
                 markerscale=0.25,
