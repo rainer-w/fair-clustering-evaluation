@@ -28,10 +28,10 @@ def run_3(path,dim,clunum,seed,core_num,ratio_noise,g,distr, n, distr_index):
     k_unfair = len(np.unique(y_unfair[y_unfair != -1]))
 
 
-    dbscan_df = search_dbscan_all(features_w, y_true, sensitive)
-    hdbscan_df = search_hdbscan_all(features_w, y_true,sensitive)
+    dbscan_df = search_dbscan_all(features_wo, y_true, sensitive)
+    hdbscan_df = search_hdbscan_all(features_wo, y_true,sensitive)
     fairden_df = search_fairden_all(features_wo, y_true, sensitive, k_unfair=k_unfair)
-    kmeans_df = search_kmeans_all(features_w, y_true, sensitive, k_unfair=k_unfair)
+    kmeans_df = search_kmeans_all(features_wo, y_true, sensitive, k_unfair=k_unfair)
     
     t = 2
     if distr_index > 2: # global distribution for dataset indices 3-5 != 50:50 -> update parameter of fairlets to allow "imbalance"

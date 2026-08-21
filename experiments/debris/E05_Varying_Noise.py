@@ -28,10 +28,10 @@ def run_5(path,dim,clunum,seed,core_num,ratio_noise,g,distr, n):
     k_unfair = len(np.unique(y_unfair[y_unfair != -1]))
 
 
-    dbscan_df = search_dbscan_all(features_w, y_true, sensitive)
-    hdbscan_df = search_hdbscan_all(features_w, y_true,sensitive)
+    dbscan_df = search_dbscan_all(features_wo, y_true, sensitive)
+    hdbscan_df = search_hdbscan_all(features_wo, y_true,sensitive)
     fairden_df = search_fairden_all(features_wo, y_true, sensitive, k_unfair=k_unfair)
-    kmeans_df = search_kmeans_all(features_w, y_true, sensitive, k_unfair=k_unfair)
+    kmeans_df = search_kmeans_all(features_wo, y_true, sensitive, k_unfair=k_unfair)
     fairlets_df = search_fairlets_all(features_wo, y_true,sensitive, k_unfair=k_unfair)
     fairsc_df = search_fairsc_all(features_w, y_true, sensitive, k_unfair=k_unfair)
     backurs_df = search_backurs_all(features_wo, y_true, sensitive,pq=(1,2),k_unfair=k_unfair)
