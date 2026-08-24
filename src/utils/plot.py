@@ -89,6 +89,7 @@ def plot_filtered_skyline(
 ):
 
     plt.rcParams.update({
+        "text.usetex": True,
         "font.size": 40,
         "axes.labelsize": 50,
         "axes.titlesize": 50,
@@ -167,9 +168,12 @@ def plot_filtered_skyline(
                     fontsize=30
                 )
 
+    metric_to_label = {"disco":"DISCO", "n_clusters":"N Clusters"}
+    xlabel = metric_to_label[x]
+    ax.set_xlabel(rf"\texttt{{{xlabel}}}")
 
-    ax.set_xlabel(x)
-    ax.set_ylabel("Balance")
+    ax.set_ylabel(rf'\texttt{{Balance}}')
+   # ax.set_xlabel(x)
     if xlim is not None: 
         ax.set_xlim(xlim)
     if ylim is not None: 
@@ -247,6 +251,7 @@ def plot_line(
 ):
 
     plt.rcParams.update({
+        "text.usetex": True,
         "font.size": 40,
         "axes.labelsize": 50,
         "axes.titlesize": 50,
@@ -418,8 +423,10 @@ def plot_line(
                     )
 
             # ---- axis labels ----
-            ax.set_xlabel(xlabel)
-            ax.set_ylabel(metric)
+            metric_to_label = {"disco":"DISCO", "balance":"Balance", "runtime":"Runtime (s)"}
+            ax.set_xlabel(rf"\texttt{{{xlabel}}}")
+            metric_label = metric_to_label[metric]
+            ax.set_ylabel(rf'\texttt{{{metric_label}}}')
             #print("debug print: ")
            # print(sorted(results["distr_index"].unique()))
           #  print(len(sorted(results["distr_index"].unique())))

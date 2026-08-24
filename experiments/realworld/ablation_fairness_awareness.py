@@ -145,20 +145,20 @@ def run_fairness_awareness(base_path:str, dataset_name : str, mode:str):
     merged.to_csv(f"{base_path}mean_std_results.csv", index=False)
 
 dataset_xlim_disco = {
-    "Adult": [0.1,0.65], 
-    "Bank": [0.3, 1.0], 
-    "Census": [0.2,0.75], 
+    "Adult": [0.0,0.65], 
+    "Bank": [0.3, 1.05], 
+    "Census": [0.15,0.75], 
     "Creditcard": [0.15,0.75],
     "Diabetes": [0.75,1.0]
 }
 dataset_ylim_balance = {
-    "Adult": [0.55,1.0], 
-    "Bank": [0.45,1.0], 
-    "Census": [0.2,1.0], 
-    "Creditcard": [0.6,1.0],
-    "Diabetes": [0.1,1.0]
+    "Adult": [0.55,1.05], 
+    "Bank": [0.45,1.05], 
+    "Census": [0.2,1.05], 
+    "Creditcard": [0.6,1.05],
+    "Diabetes": [0.1,1.05]
 }
-def main_fairness_awareness(run=False,plot=True): 
+def main_fairness_awareness(run=True,plot=True): 
 
     for dataset_name in ["Adult", "Bank", "Census", "Creditcard", "Diabetes"]:
         for mode in ["aware", "unaware"]:
