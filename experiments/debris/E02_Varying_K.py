@@ -95,7 +95,7 @@ def main_2(run=True,plot=True):
     avg_results, gt_results = aggregate_over_seeds(
         base_path, seeds = SEEDS, group_cols= ["clunum", "method", "criterion"]
     )
-   # print("GT RESULTS , ", gt_results)
+
     plot_line(avg_results, x="clunum", path=base_path, groundtruth_results=gt_results, include_std=True, logaxis="x")
 
 if __name__ == "__main__":

@@ -95,8 +95,6 @@ def main_10(run=True,plot=True):
             #results = pd.concat([existing, new_results], ignore_index=True)
             #results.to_csv(f"{path}results.csv", index=False)
 
-            from src.utils.plot import plot_line
-
             if plot:
                 plot_line(results=results, x="a", path=path, categorical=True)
     avg_results, gt_results = aggregate_over_seeds(

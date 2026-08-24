@@ -88,8 +88,6 @@ def main_4(run=True,plot=True):
             #results.to_csv(f"{path}results.csv", index=False)
 
 
-            from src.utils.plot import plot_line
-
             if plot:
                 plot_line(results=results, x="dim", path=path, categorical=True)
     avg_results, gt_results = aggregate_over_seeds(

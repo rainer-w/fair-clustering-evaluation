@@ -114,7 +114,6 @@ def main_7(run=True,plot=True):
             #results = pd.concat([existing, new_results], ignore_index=True)
             #results.to_csv(f"{path}results.csv", index=False)
 
-            from src.utils.plot import plot_line
             # plot per seed
             if plot:
                 plot_line(results=results, x="distr_index", path=path, categorical=True)

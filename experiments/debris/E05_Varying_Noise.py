@@ -86,8 +86,6 @@ def main_5(run=True,plot=True):
             #results = pd.concat([existing, new_results], ignore_index=True)
             #results.to_csv(f"{path}results.csv", index=False)
 
-            from src.utils.plot import plot_line
-
             if plot:
                 plot_line(results=results, x="ratio_noise", path=path, categorical=True, tick_labels=["0", ".05", ".1", ".15", ".2", ".3", ".4", ".5"])
     avg_results, gt_results = aggregate_over_seeds(

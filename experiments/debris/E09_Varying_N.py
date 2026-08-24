@@ -88,14 +88,12 @@ def main_9(run=True,plot=True):
             #results = pd.concat([existing, new_results], ignore_index=True)
             #results.to_csv(f"{path}results.csv", index=False)
 
-            from src.utils.plot import plot_line
-
             if plot:
                 plot_line(results=results, x="n", path=path, categorical=True)
     avg_results, gt_results = aggregate_over_seeds(
     base_path, seeds = SEEDS, group_cols= ["n", "method", "criterion"]
     )
-
-    plot_line(avg_results, x="n", path=base_path, categorical=True, groundtruth_results=gt_results, include_std=True)
-    if __name__ == "__main__":
-        main_9()
+ 
+    plot_line(avg_results, x="n", path=base_path, categorical=False, logaxis="x", groundtruth_results=gt_results, include_std=True)
+if __name__ == "__main__":
+    main_9()

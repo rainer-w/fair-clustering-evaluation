@@ -256,7 +256,7 @@ def plot_line(
     })
     method_order = [
         "GT_Fair", 
-        "GT_Unfair"
+        "GT_Unfair",
         "DBSCAN", 
         "HDBSCAN", 
         "KMeans", 

@@ -104,8 +104,6 @@ def main_3(run=True,plot=True):
             #results = pd.concat([existing, new_results], ignore_index=True)
             #results.to_csv(f"{path}results.csv", index=False)
 
-            from src.utils.plot import plot_line
-            # plot per seed
             if plot:
                 plot_line(results=results, x="distr_index", path=path, tick_labels= ["1:1A", "1:1B", "1:1C", "4:1A", "4:1B", "4:1C"], xlabel="Imbalance Setting", categorical=True)
     avg_results, gt_results = aggregate_over_seeds(
