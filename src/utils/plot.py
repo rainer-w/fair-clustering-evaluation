@@ -918,7 +918,8 @@ def plot_feature_sensitive_correlations(
     X,
     sensitive,
     feature_names=None,
-    save_path=None
+    save_path=None,
+    title_inline = None
 ):
 
     plt.rcParams.update({
@@ -990,6 +991,15 @@ def plot_feature_sensitive_correlations(
     ax.axhline(0, linewidth=1)
    # ax.set_title("Feature ↔ Sensitive Attribute (Pearson)")
    # ax.legend()
+    if title_inline:
+        ax.text(
+            0.02, 0.98, 
+            title_inline, 
+            transform=ax.transAxes,
+            ha="left",
+            va= "top"
+        )
+
 
     plt.tight_layout()
 
@@ -1039,7 +1049,14 @@ def plot_feature_sensitive_correlations(
     ax.axhline(0, linewidth=1)
     #ax.set_title("Feature ↔ Sensitive Attribute (Spearman)")
    # ax.legend()
-
+    if title_inline:
+        ax.text(
+            0.02, 0.98, 
+            title_inline, 
+            transform=ax.transAxes,
+            ha="left",
+            va= "top"
+        )
     plt.tight_layout()
 
     if save_path:
@@ -1083,7 +1100,14 @@ def plot_feature_sensitive_correlations(
     ax.set_xticklabels(X.columns, rotation=45, ha="right")
     ax.set_ylabel("Mutual Information")
     ax.set_ylim(0, mi.max().max() * 1.1)
-
+    if title_inline:
+        ax.text(
+            0.02, 0.98, 
+            title_inline, 
+            transform=ax.transAxes,
+            ha="left",
+            va= "top"
+        )
     #ax.set_title("Feature ↔ Sensitive Attribute (Mutual Information)")
    # ax.legend()
 

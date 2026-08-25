@@ -17,14 +17,19 @@ def main_feat_corr(run=True):
 
     if run:
         for dataset_name in ["Adult","Bank","Census", "Creditcard","Diabetes"]:
+            print("running ", dataset_name)
             base_path=f"results/realworld/correlations/{dataset_name}/"
             Path(base_path).mkdir(parents=True,exist_ok=True)
             X_w, X_wo, sens, y_true = dataset_map[dataset_name]()
             pearson, spearman, mi = plot_feature_sensitive_correlations(
                 X_wo,
                 sens,
-                save_path=f"{base_path}"
+                save_path=f"{base_path}", 
+                title_inline= dataset_name
             )
+            pearson.to_csv(f"{base_path}pearson.csv")
+            spearman.to_csv(f"{base_path}spearman.csv")
+            mi.to_csv(f"{base_path}mutual_information.csv")
         main_corr_legend_plot()
 if __name__ == "__main__": 
     main_feat_corr()
