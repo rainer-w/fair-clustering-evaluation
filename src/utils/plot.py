@@ -337,6 +337,8 @@ def plot_line(
                 "xy" : ax.loglog
             }
             custom_plot = plt_map[logaxis]
+            if metric == "runtime": 
+                custom_plot = plt_map["y"]
             #for method in results["method"].unique():
             for method in method_order:
                 if method == "GroundTruth" or method not in results["method"].values: #
@@ -440,7 +442,10 @@ def plot_line(
                     ax.set_xticklabels([str(v) for v in x_values]) # ha = "right"?
 
             else:
-                ax.set_xticks(x_values)
+                if tick_labels is not None: 
+                    ax.set_xticks(tick_labels)
+                else:
+                    ax.set_xticks(x_values)
         #    plt.subplots_adjust(left=0.25, right=0.95, bottom=0.2, top=0.9)
            # ax.legend(loc="upper center",bbox_to_anchor=(0.5, -0.15),frameon=False)
             handles, labels = ax.get_legend_handles_labels()

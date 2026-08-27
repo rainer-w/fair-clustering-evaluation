@@ -94,6 +94,6 @@ def main_9(run=True,plot=True):
     base_path, seeds = SEEDS, group_cols= ["n", "method", "criterion"]
     )
  
-    plot_line(avg_results, x="n", path=base_path, categorical=False, logaxis="x", groundtruth_results=gt_results, include_std=True)
+    plot_line(avg_results, x="n", tick_labels=[1000,5000,10000], path=base_path, categorical=False, groundtruth_results=gt_results, include_std=True)
 if __name__ == "__main__":
     main_9()
