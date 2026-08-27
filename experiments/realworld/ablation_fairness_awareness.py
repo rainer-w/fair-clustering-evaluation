@@ -156,9 +156,9 @@ dataset_ylim_balance = {
     "Bank": [0.45,1.05], 
     "Census": [0.2,1.05], 
     "Creditcard": [0.6,1.05],
-    "Diabetes": [0.1,1.05]
+    "Diabetes": [0.0,1.05]
 }
-def main_fairness_awareness(run=True,plot=True): 
+def main_fairness_awareness(run=False,plot=True): 
 
     for dataset_name in ["Adult", "Bank", "Census", "Creditcard", "Diabetes"]:
         for mode in ["aware", "unaware"]:
@@ -173,19 +173,10 @@ def main_fairness_awareness(run=True,plot=True):
                     filter_df = filter_df[filter_df["criterion"] == "score"]
                 elif suffix == "FU": 
                     filter_df = filter_df[filter_df["criterion"] == "disco"]
+
                 plot_filtered_skyline(filter_df, x="n_clusters", path=f"{base_path}{dataset_name}_{suffix}_nclusters_", title_inline=f"{dataset_name} {suffix}")
                 plot_filtered_skyline(filter_df, x="disco", path=f"{base_path}{dataset_name}_{suffix}_",  title_inline=f"{dataset_name} {suffix}",
                                     xlim = dataset_xlim_disco[dataset_name], ylim=dataset_ylim_balance[dataset_name])
-               # if mode == "aware":
-               #     score_df = df[df["criterion"] == "score"].copy()
-               #     plot_filtered_skyline(score_df, x="n_clusters", path=f"{base_path}optscore_n_clusters-", title_inline=f"{dataset_name} {suffix}")
-               #     plot_filtered_skyline(score_df, x="disco", path=f"{base_path}{dataset_name}_aware_",  title_inline=f"{dataset_name} {suffix}",
-               #                         xlim = dataset_xlim_disco[dataset_name], ylim=dataset_ylim_balance[dataset_name])
-               # if mode == "unaware":
-               #     disco_df = df[df["criterion"] == "disco"].copy()
-               #     plot_filtered_skyline(disco_df, x="n_clusters", path=f"{base_path}optdisco_n_clusters-", title_inline=f"{dataset_name} {suffix}")
-               #     plot_filtered_skyline(disco_df, x="disco", path=f"{base_path}{dataset_name}_unaware_", title_inline=f"{dataset_name} {suffix}",
-               #                         xlim = dataset_xlim_disco[dataset_name], ylim=dataset_ylim_balance[dataset_name])
 
 if __name__ == "__main__":
     main_fairness_awareness()

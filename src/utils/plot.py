@@ -144,7 +144,6 @@ def plot_filtered_skyline(
         "GT_Unfair": "#bbbbbb",
     }
     for method in method_order:
-
         subdf = filtered[
             filtered["method"] == method
         ]
