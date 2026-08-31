@@ -301,7 +301,7 @@ def plot_line(
         "FairSC": "#66a61e",
         "Fairlets": "tab:olive",
         "SFC":       "#1b9e77", 
-        "GT_Fair": "#666666",
+        "GT_Fair":  "#666666",
         "GT_Unfair": "#bbbbbb",
     }
     results = results.copy()
@@ -378,47 +378,46 @@ def plot_line(
                     )
                # print(xs)
               #  print("gt results ", groundtruth_results)
-            if groundtruth_results is not None and metric == "balance": 
-
+            if groundtruth_results is not None and metric in ["disco","balance"]: #metric == "balance": 
                 custom_plot(
                     xs, 
-                    groundtruth_results["balance_fair"],
+                    groundtruth_results[f"{metric}_fair"],
                     marker=method_markers["GT_Fair"],
                     label="GT_Fair",
                     linestyle=method_linestyles["GT_Fair"],
                     color=method_colors["GT_Fair"],
                     markersize=32,
                     linewidth=3,
-                    alpha=0.5
+                    alpha=0.7
                 )
                 if include_std:
-                    std = groundtruth_results["balance_fair_std"].values
+                    std = groundtruth_results[f"{metric}_fair_std"].values
                     # variance band
                     ax.fill_between(
                         xs,
-                        groundtruth_results["balance_fair"]- std,
-                        groundtruth_results["balance_fair"] + std,
+                        groundtruth_results[f"{metric}_fair"]- std,
+                        groundtruth_results[f"{metric}_fair"] + std,
                         color=method_colors[method],
                         alpha=0.15
                     )
                 custom_plot(
                     xs, 
-                    groundtruth_results["balance_unfair"],
+                    groundtruth_results[f"{metric}_unfair"],
                     marker=method_markers["GT_Unfair"],
                     label="GT_Unfair",
                     linestyle=method_linestyles["GT_Unfair"],
                     color=method_colors["GT_Unfair"],
                     markersize=32,
                     linewidth=3,
-                    alpha=0.5
+                    alpha=0.7
                 )
                 if include_std:
-                    std = groundtruth_results["balance_unfair_std"].values
+                    std = groundtruth_results[f"{metric}_unfair_std"].values
                     # variance band
                     ax.fill_between(
                         xs,
-                        groundtruth_results["balance_unfair"]- std,
-                        groundtruth_results["balance_unfair"] + std,
+                        groundtruth_results[f"{metric}_unfair"]- std,
+                        groundtruth_results[f"{metric}_unfair"] + std,
                         color=method_colors[method],
                         alpha=0.15
                     )
