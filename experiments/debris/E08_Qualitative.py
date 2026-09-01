@@ -79,12 +79,12 @@ def main_8(run=True,plot=True):
 
     Path(path).mkdir(parents=True,exist_ok=True)
     stacked_map = {1:None,2:None,3:None}
-    result1,fde1,fda1 = run_8(f"{path}Setting_1_",dim=10,clunum=2,seed=27,core_num=[15,15],ratio_noise=0.0,g=2,distr=[[0.5,0.5], [0.5,0.5]],n=1000, fairlets_t=5, run=run)
+    result1,fde1,fda1 = run_8(f"{path}Setting_1_",dim=10,clunum=10,seed=11,core_num=[15]*10,ratio_noise=0.0,g=2,distr=[[0.5,0.5], [0.5,0.5]],n=2000, fairlets_t=5, run=run)
     if  run:
         result1.to_csv(f"{path}Setting_1_result.csv",index=False)
         fda1.to_csv(f"{path}Setting_1_data.csv", index=False)
         stacked_map[1] = result1
-    result2, fde2,fda2 = run_8(f"{path}Setting_2_",dim=10, clunum=10, seed=11, core_num=[15]*10, ratio_noise=0.0, g=2, distr=[[0.9,0.1], [0.1,0.9]],n=1000, fairlets_t=5,run=run)
+    result2, fde2,fda2 = run_8(f"{path}Setting_2_",dim=10, clunum=10, seed=11, core_num=[15]*10, ratio_noise=0.0, g=2, distr=[[0.9,0.1], [0.1,0.9]],n=2000, fairlets_t=5,run=run)
     if  run:
         result2.to_csv(f"{path}Setting_2_result.csv",index=False)
         fda2.to_csv(f"{path}Setting_2_data.csv", index=False)
@@ -134,11 +134,14 @@ def main_8(run=True,plot=True):
             full_df = stacked_map[i].copy()
             full_df = pd.concat([full_df, pd.DataFrame(gt_rows)],ignore_index=True)
             deviations_df = summarize_gt_deviations(stacked_map[i].copy(), gt_rows)
-            print(deviations_df)
+           # print(deviations_df)
             plot_filtered_skyline(full_df,x="disco",x_threshold=-1.0, path=f"{path}Setting_{i}_",
                                   xlim = (-1,1), ylim = (0,1.05))
 
             plot_filtered_skyline(deviations_df, x="deviation_disco_fair", path=f"{path}Setting_{i}_deviations_",
-                                  xlim = (-1,0), ylim = (-1,0), y="deviation_balance_fair", balance_threshold=-1)
+                                  xlim = (-0.4,0.3), ylim = (-0.65,0.05), y="deviation_balance_fair", balance_threshold=-1)
+
+            full_df["diff_n_clusters"] = full_df["n_clusters"] - 10
+            plot_filtered_skyline(full_df, x="balance", path=f"{path}Setting_{i}_clusterdiff_", y="diff_n_clusters" , ylim=(-0.05,30), xlim = (0.4,1.05))
 if __name__ == "__main__":
     main_8()

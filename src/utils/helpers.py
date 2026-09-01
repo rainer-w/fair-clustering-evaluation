@@ -83,7 +83,6 @@ def add_gt_deviations(df, gt_rows):
 
     return df
 def summarize_gt_deviations(df, gt_rows):
-    # Extract GT values
     gt_fair = next(
         row for row in gt_rows
         if row["method"] == "GT_Fair"
@@ -94,10 +93,8 @@ def summarize_gt_deviations(df, gt_rows):
         if row["method"] == "GT_Unfair"
     )
 
-    # Work on a copy
     df = df.copy()
 
-    # Calculate per-row deviations
     df["deviation_balance_fair"] = (
         df["balance"] - gt_fair["balance"]
     )
@@ -114,7 +111,6 @@ def summarize_gt_deviations(df, gt_rows):
         df["disco"] - gt_unfair["disco"]
     )
 
-    # Aggregate over all parameter settings per method
     summary = (
         df.groupby("method")
         .agg(
@@ -132,7 +128,14 @@ def summarize_gt_deviations(df, gt_rows):
         )
         .reset_index()
     )
-
+    gt_diff = pd.DataFrame([{
+        "method" : "GT_Unfair",
+        "deviation_balance_fair" : gt_unfair["balance"] - gt_fair["balance"], 
+        "deviation_disco_fair" : gt_unfair["disco"] - gt_fair["disco"]
+    }])
+    summary = pd.concat(
+        [summary,gt_diff], ignore_index=True
+    )
     return summary
 def evaluate_clustering(
     method,

@@ -96,7 +96,7 @@ def main_2(run=True,plot=True):
         base_path, seeds = SEEDS, group_cols= ["clunum", "method", "criterion"]
     )
 
-    plot_line(avg_results, x="clunum", path=base_path, groundtruth_results=gt_results, include_std=True, logaxis="x")
+    plot_line(avg_results, x="clunum", tick_labels=[2,4,6,10,16,20], path=base_path, groundtruth_results=gt_results, include_std=True)
 
 if __name__ == "__main__":
     main_2()

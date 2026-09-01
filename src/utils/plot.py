@@ -91,12 +91,12 @@ def plot_filtered_skyline(
 
     plt.rcParams.update({
         "text.usetex": True,
-        "font.size": 40,
-        "axes.labelsize": 50,
-        "axes.titlesize": 50,
-        "legend.fontsize": 40,
-        "xtick.labelsize": 40,
-        "ytick.labelsize": 40
+        "font.size": 60,
+        "axes.labelsize": 60,
+        "axes.titlesize": 60,
+        "legend.fontsize": 60,
+        "xtick.labelsize": 60,
+        "ytick.labelsize": 60
     })
 
 
@@ -142,8 +142,8 @@ def plot_filtered_skyline(
         "FairSC": "#66a61e",      
         "Fairlets": "tab:olive",    
         "SFC":       "#1b9e77",  
-        "GT_Fair": "#666666",
-        "GT_Unfair": "#bbbbbb",
+        "GT_Fair": "#000000",#"#666666",
+        "GT_Unfair": "#000000"# "#bbbbbb",
     }
     for method in method_order:
         subdf = filtered[
@@ -172,7 +172,8 @@ def plot_filtered_skyline(
                 )
 
     metric_to_label = {"disco":"DISCO", "n_clusters":"N Clusters", "balance":"Balance",
-                       "deviation_disco_fair":"$\Delta DISCO$", "deviation_balance_fair":"$\Delta Balance$"}
+                       "deviation_disco_fair":"$\Delta DISCO$", "deviation_balance_fair":"$\Delta Balance$",
+                       "diff_n_clusters" : "$\Delta Clunum$"}
     xlabel = metric_to_label[x]
     ax.set_xlabel(rf"\texttt{{{xlabel}}}")
     ylabel = metric_to_label[y]
@@ -200,10 +201,10 @@ def plot_filtered_skyline(
         ordered_handles,
         ordered_labels,
         loc="center",
-        ncol=3,
+        ncol=4,
         frameon=False,
-        fontsize=16,
-        markerscale=0.25,
+        fontsize=25,
+        markerscale=0.35,
         handlelength=1,
         handletextpad=0.4,
         columnspacing=1.0,
@@ -255,12 +256,12 @@ def plot_line(
 
     plt.rcParams.update({
         "text.usetex": True,
-        "font.size": 40,
-        "axes.labelsize": 50,
-        "axes.titlesize": 50,
-        "legend.fontsize": 40,
-        "xtick.labelsize": 40,
-        "ytick.labelsize": 40
+        "font.size": 60,
+        "axes.labelsize": 60,
+        "axes.titlesize": 60,
+        "legend.fontsize": 60,
+        "xtick.labelsize": 60,
+        "ytick.labelsize": 60
     })
     method_order = [
         "GT_Fair", 
@@ -305,8 +306,8 @@ def plot_line(
         "FairSC": "#66a61e",
         "Fairlets": "tab:olive",
         "SFC":       "#1b9e77", 
-        "GT_Fair":  "#666666",
-        "GT_Unfair": "#bbbbbb",
+        "GT_Fair": "#222222",# "#666666",
+        "GT_Unfair":"#222222"# "#bbbbbb",
     }
     results = results.copy()
 
@@ -343,6 +344,49 @@ def plot_line(
             if metric == "runtime": 
                 custom_plot = plt_map["y"]
             #for method in results["method"].unique():
+            if groundtruth_results is not None and metric in ["disco","balance"]: #metric == "balance": 
+                custom_plot(
+                    xs, 
+                    groundtruth_results[f"{metric}_fair"],
+                    marker=method_markers["GT_Fair"],
+                    label="GT_Fair",
+                    linestyle=method_linestyles["GT_Fair"],
+                    color=method_colors["GT_Fair"],
+                    markersize=32,
+                    linewidth=3,
+                    alpha=1
+                )
+                if include_std:
+                    std = groundtruth_results[f"{metric}_fair_std"].values
+                    # variance band
+                    ax.fill_between(
+                        xs,
+                        groundtruth_results[f"{metric}_fair"]- std,
+                        groundtruth_results[f"{metric}_fair"] + std,
+                        color=method_colors[method],
+                        alpha=0.15
+                    )
+                custom_plot(
+                    xs, 
+                    groundtruth_results[f"{metric}_unfair"],
+                    marker=method_markers["GT_Unfair"],
+                    label="GT_Unfair",
+                    linestyle=method_linestyles["GT_Unfair"],
+                    color=method_colors["GT_Unfair"],
+                    markersize=32,
+                    linewidth=3,
+                    alpha=1
+                )
+                if include_std:
+                    std = groundtruth_results[f"{metric}_unfair_std"].values
+                    # variance band
+                    ax.fill_between(
+                        xs,
+                        groundtruth_results[f"{metric}_unfair"]- std,
+                        groundtruth_results[f"{metric}_unfair"] + std,
+                        color=method_colors[method],
+                        alpha=0.15
+                    )
             for method in method_order:
                 if method == "GroundTruth" or method not in results["method"].values: #
                     continue
@@ -359,6 +403,7 @@ def plot_line(
                     xs = subdf[x].values
 
                 ys = subdf[metric].values
+
                 custom_plot(
                     xs,
                     ys,
@@ -382,49 +427,7 @@ def plot_line(
                     )
                # print(xs)
               #  print("gt results ", groundtruth_results)
-            if groundtruth_results is not None and metric in ["disco","balance"]: #metric == "balance": 
-                custom_plot(
-                    xs, 
-                    groundtruth_results[f"{metric}_fair"],
-                    marker=method_markers["GT_Fair"],
-                    label="GT_Fair",
-                    linestyle=method_linestyles["GT_Fair"],
-                    color=method_colors["GT_Fair"],
-                    markersize=32,
-                    linewidth=3,
-                    alpha=0.7
-                )
-                if include_std:
-                    std = groundtruth_results[f"{metric}_fair_std"].values
-                    # variance band
-                    ax.fill_between(
-                        xs,
-                        groundtruth_results[f"{metric}_fair"]- std,
-                        groundtruth_results[f"{metric}_fair"] + std,
-                        color=method_colors[method],
-                        alpha=0.15
-                    )
-                custom_plot(
-                    xs, 
-                    groundtruth_results[f"{metric}_unfair"],
-                    marker=method_markers["GT_Unfair"],
-                    label="GT_Unfair",
-                    linestyle=method_linestyles["GT_Unfair"],
-                    color=method_colors["GT_Unfair"],
-                    markersize=32,
-                    linewidth=3,
-                    alpha=0.7
-                )
-                if include_std:
-                    std = groundtruth_results[f"{metric}_unfair_std"].values
-                    # variance band
-                    ax.fill_between(
-                        xs,
-                        groundtruth_results[f"{metric}_unfair"]- std,
-                        groundtruth_results[f"{metric}_unfair"] + std,
-                        color=method_colors[method],
-                        alpha=0.15
-                    )
+
 
             # ---- axis labels ----
             metric_to_label = {"disco":"DISCO", "balance":"Balance", "runtime":"Runtime (s)"}
@@ -930,12 +933,12 @@ def plot_feature_sensitive_correlations(
 ):
 
     plt.rcParams.update({
-        "font.size": 40,
-        "axes.labelsize": 50,
-        "axes.titlesize": 50,
-        "legend.fontsize": 40,
-        "xtick.labelsize": 40,
-        "ytick.labelsize": 40
+        "font.size": 60,
+        "axes.labelsize": 60,
+        "axes.titlesize": 60,
+        "legend.fontsize": 60,
+        "xtick.labelsize": 60,
+        "ytick.labelsize": 60
     })
 
     if isinstance(X, np.ndarray):
