@@ -139,14 +139,15 @@ figures/
 
 ## Paper ↔ Repository Mapping
 
-The following table maps each experimental result, figure, and table in the paper
+The following table maps each experimental result or figure in the paper
 to the corresponding scripts and generated outputs in this repository.
 
 | Paper Component | Description | Experiment Script | Output Location |
 |---|---|---|---|
 | Fig. 1 | Sensitive Feature Correlations | `experiments/realworld/sensitive_feature_correlations.py` | `results/realworld/correlations/..` |
-| Fig. 2 | [Short description] | `experiments/.../....py` | `results/.../` |
+| Fig. 2 | DEBRIS showcase | `figures/generate_debris_example.py` | `figures/` |
 | Fig. 3 | [Short description] | `experiments/.../....py` | `results/.../` |
+| Fig. 4 | Fairness Aware vs Unaware | `experiments/realworld/ablation_fairness_awareness.py` | `results/realworld/fairness-awareness/..` |
 | Table 1 | [Short description] | `experiments/.../....py` | `results/.../` |
 | Table 2 | [Short description] | `experiments/.../....py` | `results/.../` |
 | §4.1 | [Experiment description] | `experiments/.../....py` | `results/.../` |
