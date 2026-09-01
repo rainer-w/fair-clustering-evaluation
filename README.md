@@ -195,6 +195,7 @@ If you use this repository or the DEBRIS generator in your research, please cite
   year      = {2026}
 }
 ```
+(manuscript under review)
 ---
 
 # Acknowledgements
