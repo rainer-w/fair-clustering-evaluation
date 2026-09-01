@@ -1,6 +1,6 @@
 # Are We Evaluating Fair Clustering Fairly? Benchmarks, Protocols and Data Generation for Non-Convex Fair Clustering
 
-Fair clustering evaluation currently lacks standardized benchmarks and protocols. Existing evaluations rely heavily on a small number of datasets originally developed for supervised learning, resulting in inconsistent preprocessing and incomparable experimental settings. This repository provides a benchmark study of fair clustering evaluation, including a fairness-aware model selection protocol and a synthetic data generator for density-based clustering scenarios.
+Fair clustering evaluation currently lacks standardized benchmarks and protocols. Existing evaluations rely heavily on a small number of datasets originally developed for supervised learning, resulting in inconsistent preprocessing and incomparable experimental settings. This repository provides a benchmark study of fair clustering evaluation, including a fairness-aware protocol and a synthetic data generator for density-based clustering scenarios.
 ---
 
 # Artifact Overview
