@@ -133,10 +133,10 @@ The following table maps each figure in the paper to the corresponding scripts a
 
 | Paper Component | Description | Experiment Script | Output Location |
 |---|---|---|---|
-| Fig. 1 | Sensitive Feature Correlations | `experiments/realworld/sensitive_feature_correlations.py` | `results/realworld/correlations/..` |
+| Fig. 1 | Sensitive Feature Correlations | `experiments/realworld/sensitive_feature_correlations.py` | `results/realworld/correlations/` |
 | Fig. 2 | DEBRIS showcase | `figures/generate_debris_example.py` | `figures/` |
 | Fig. 3 | DEBRIS Cost of Fairness | `experiments/debris/E01_GT_Fairness.py` | `results/debris/Experiment1/` |
-| Fig. 4 | Fairness Aware vs Unaware | `experiments/realworld/ablation_fairness_awareness.py` | `results/realworld/fairness-awareness/..` |
+| Fig. 4 | Fairness Aware vs Unaware | `experiments/realworld/ablation_fairness_awareness.py` | `results/realworld/fairness-awareness/` |
 | Fig. 5 | DEBRIS Varying Cluster Count| `experiments/debris/E02_Varying_K.py` | `results/debris/Experiment2/` |
 | Fig. 6 | DEBRIS Varying Dimensions| `experiments/debris/E04_Varying_Dim.py` | `results/debris/Experiment4/` |
 | Fig. 7 | DEBRIS Varying Noise| `experiments/debris/E05_Varying_Noise.py` | `results/debris/Experiment5/` |
@@ -155,17 +155,17 @@ DEBRIS generates synthetic density-based clusters with controllable sensitive at
 
 Available parameters:
 
-| Parameter     | Description                                                      |
-| ------------- | ---------------------------------------------------------------- |
-| `dim`         | Number of dimensions                                             |
-| `clunum`      | Number of clusters                                               |
-| `core_num`    | Number of cores used for generation                              |
-| `ratio_noise` | Ratio of noise samples                                           |
-| `seed`        | Random seed                                                      |
-| `g`           | Number of sensitive attribute values                             |
-| `distr`       | Distribution of sensitive values within subgroups                |
-| `gap`         | Number of cores separating individual subgroups within a cluster |
-| `clu_ratios`  | Distribution of points across clusters                           |
+| Parameter     | Description                                                      | Datatype |
+| ------------- | ---------------------------------------------------------------- |----------|
+| `dim`         | Number of dimensions                                             | int |
+| `clunum`      | Number of clusters                                               | int |
+| `core_num`    | Number of cores used for generation                              | int or list(int), eg. 15 or [15]*clunum |
+| `ratio_noise` | Ratio of noise samples                                           | float |
+| `seed`        | Random seed                                                      | int |
+| `g`           | Number of sensitive attribute values                             | int |
+| `distr`       | Distribution of sensitive values within subgroups                | nested list, eg. [[0.5,0.5], [0.5,0.5]] |
+| `gap`         | Number of cores separating individual subgroups within a cluster | int |
+| `clu_ratios`  | Distribution of points across clusters                           | list, eg. [0.1]*10 |
 
 Example:
 
