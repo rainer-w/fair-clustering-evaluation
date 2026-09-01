@@ -184,17 +184,6 @@ distr = [[0.9, 0.1],
 
 which creates two subgroups dominated by different sensitive attribute values.
 
-
-
----
-# Citation
-
-If you use this repository or DEBRIS in your research, please cite:
-
-```
-TODO: add BibTeX entry
-```
-
 ---
 
 # Acknowledgements
