@@ -85,7 +85,8 @@ def plot_filtered_skyline(
     annotate=False, 
     xlim=None, 
     ylim=None,
-    title_inline=None
+    title_inline=None,
+    y="balance"
 ):
 
     plt.rcParams.update({
@@ -104,10 +105,9 @@ def plot_filtered_skyline(
         constrained_layout=True
     )
 
-
     filtered = results_df[
         (results_df[x] >= x_threshold) &
-        (results_df["balance"] >= balance_threshold)
+        (results_df[y] >= balance_threshold)
     ]
 
     method_order = [
@@ -117,7 +117,9 @@ def plot_filtered_skyline(
             "DBSCAN", 
             "FairDen", 
             "HDBSCAN", 
-            "FairSC"
+            "FairSC",
+            "GT_Fair",
+            "GT_Unfair" 
         ]
     method_markers = {
         "DBSCAN": "^",
@@ -147,10 +149,12 @@ def plot_filtered_skyline(
         subdf = filtered[
             filtered["method"] == method
         ]
+        if subdf.empty:
+            continue
 
         ax.scatter(
             subdf[x],
-            subdf["balance"],
+            subdf[y],
             label=method,
             alpha=0.8,
             s=700,          
@@ -167,11 +171,12 @@ def plot_filtered_skyline(
                     fontsize=30
                 )
 
-    metric_to_label = {"disco":"DISCO", "n_clusters":"N Clusters"}
+    metric_to_label = {"disco":"DISCO", "n_clusters":"N Clusters", "balance":"Balance",
+                       "deviation_disco_fair":"$\Delta DISCO$", "deviation_balance_fair":"$\Delta Balance$"}
     xlabel = metric_to_label[x]
     ax.set_xlabel(rf"\texttt{{{xlabel}}}")
-
-    ax.set_ylabel(rf'\texttt{{Balance}}')
+    ylabel = metric_to_label[y]
+    ax.set_ylabel(rf'\texttt{{{ylabel}}}')
    # ax.set_xlabel(x)
     if xlim is not None: 
         ax.set_xlim(xlim)
@@ -226,7 +231,6 @@ def plot_filtered_skyline(
         dpi=300,
         bbox_inches="tight"
     )
-
     plt.close(fig)
 
     return fig

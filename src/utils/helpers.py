@@ -28,6 +28,112 @@ def evaluate_groundtruth(
         "disco_unfair" : disco_unfair
     }
     return row
+def evaluate_groundtruth_separate(
+        fairdegen
+): 
+    features = fairdegen.get_features_wo_sensitive()
+    sensitive = fairdegen.get_sensitive()
+    fair_gt = fairdegen.get_groundtruth()
+    unfair_gt = fairdegen.get_unfair_groundtruth()
+    balance_fair = balance_score("test",["sensitive_value"], fair_gt, sensitive)
+    balance_unfair = balance_score("test", ["sensitive_value"], unfair_gt, sensitive)
+    disco_fair = disco_score(features, fair_gt)
+    disco_unfair = disco_score(features, unfair_gt)
+
+    row_fair = {
+        "method" : "GT_Fair",
+        "balance" : balance_fair, 
+        "disco" : disco_fair,
+    }
+    row_unfair = {
+        "method" : "GT_Unfair",
+        "balance" : balance_unfair,
+        "disco" : disco_unfair
+    }
+    rows = [row_fair,row_unfair]
+    return rows
+def add_gt_deviations(df, gt_rows):
+    gt_fair = next(
+        row for row in gt_rows
+        if row["method"] == "GT_Fair"
+    )
+
+    gt_unfair = next(
+        row for row in gt_rows
+        if row["method"] == "GT_Unfair"
+    )
+
+    df = df.copy()
+
+    df["delta_balance_fair"] = (
+        df["balance"] - gt_fair["balance"]
+    )
+
+    df["delta_disco_fair"] = (
+        df["disco"] - gt_fair["disco"]
+    )
+
+    df["delta_balance_unfair"] = (
+        df["balance"] - gt_unfair["balance"]
+    )
+
+    df["delta_disco_unfair"] = (
+        df["disco"] - gt_unfair["disco"]
+    )
+
+    return df
+def summarize_gt_deviations(df, gt_rows):
+    # Extract GT values
+    gt_fair = next(
+        row for row in gt_rows
+        if row["method"] == "GT_Fair"
+    )
+
+    gt_unfair = next(
+        row for row in gt_rows
+        if row["method"] == "GT_Unfair"
+    )
+
+    # Work on a copy
+    df = df.copy()
+
+    # Calculate per-row deviations
+    df["deviation_balance_fair"] = (
+        df["balance"] - gt_fair["balance"]
+    )
+
+    df["deviation_disco_fair"] = (
+        df["disco"] - gt_fair["disco"]
+    )
+
+    df["deviation_balance_unfair"] = (
+        df["balance"] - gt_unfair["balance"]
+    )
+
+    df["deviation_disco_unfair"] = (
+        df["disco"] - gt_unfair["disco"]
+    )
+
+    # Aggregate over all parameter settings per method
+    summary = (
+        df.groupby("method")
+        .agg(
+            deviation_balance_fair=("deviation_balance_fair", "mean"),
+            deviation_balance_fair_std=("deviation_balance_fair", "std"),
+
+            deviation_disco_fair=("deviation_disco_fair", "mean"),
+            deviation_disco_fair_std=("deviation_disco_fair", "std"),
+
+            deviation_balance_unfair=("deviation_balance_unfair", "mean"),
+            deviation_balance_unfair_std=("deviation_balance_unfair", "std"),
+
+            deviation_disco_unfair=("deviation_disco_unfair", "mean"),
+            deviation_disco_unfair_std=("deviation_disco_unfair", "std"),
+        )
+        .reset_index()
+    )
+
+    return summary
 def evaluate_clustering(
     method,
     X,
