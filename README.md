@@ -184,6 +184,17 @@ distr = [[0.9, 0.1],
 
 which creates two subgroups dominated by different sensitive attribute values.
 
+## Citation
+
+If you use this repository or the DEBRIS generator in your research, please cite:
+
+```bibtex
+@inproceedings{woess2026fairclustering,
+  author    = {Woess, Rainer and Krieger, Lena and Jahn, Philipp and Seidl, Thomas and B{\"o}hm, Christian and Beer, Anna},
+  title     = {Are We Evaluating Fair Clustering Fairly? Benchmarks, Protocols and Data Generation for Non-Convex Fair Clustering},
+  year      = {2026}
+}
+```
 ---
 
 # Acknowledgements
