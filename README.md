@@ -143,7 +143,7 @@ The following table maps each experimental result, figure, and table in the pape
 to the corresponding scripts and generated outputs in this repository.
 
 | Paper Component | Description | Experiment Script | Output Location |
-|---|---|---|---|---|
+|---|---|---|---|
 | Fig. 1 | Sensitive Feature Correlations | `experiments/realworld/sensitive_feature_correlations.py` | `results/realworld/correlations/..` |
 | Fig. 2 | [Short description] | `experiments/.../....py` | `results/.../` |
 | Fig. 3 | [Short description] | `experiments/.../....py` | `results/.../` |
