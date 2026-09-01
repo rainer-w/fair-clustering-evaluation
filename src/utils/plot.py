@@ -109,18 +109,17 @@ def plot_filtered_skyline(
         (results_df[x] >= x_threshold) &
         (results_df[y] >= balance_threshold)
     ]
-
     method_order = [
-            "KMeans", 
-            "Fairlets", 
-            "SFC",
-            "DBSCAN", 
-            "FairDen", 
-            "HDBSCAN", 
-            "FairSC",
-            "GT_Fair",
-            "GT_Unfair" 
-        ]
+        "GT_Fair", 
+        "GT_Unfair",
+        "DBSCAN", 
+        "HDBSCAN", 
+        "KMeans", 
+        "FairDen", 
+        "FairSC", 
+        "Fairlets", 
+        "SFC",
+    ]
     method_markers = {
         "DBSCAN": "^",
         "HDBSCAN": "v",
@@ -170,7 +169,31 @@ def plot_filtered_skyline(
                     (row[x], row["balance"]),
                     fontsize=30
                 )
+    for method in ["GT_Fair", "GT_Unfair"]: 
+        subdf = filtered[
+        filtered["method"] == method
+        ]
+        if subdf.empty:
+            continue
 
+        ax.scatter(
+            subdf[x],
+            subdf[y],
+            label=method,
+            alpha=0.8,
+            s=700,          
+            color=method_colors[method],
+            marker=method_markers[method]
+        )
+
+
+        if annotate:
+            for _, row in subdf.iterrows():
+                ax.annotate(
+                    str(row["n_clusters"]),
+                    (row[x], row["balance"]),
+                    fontsize=30
+                )
     metric_to_label = {"disco":"DISCO", "n_clusters":"N Clusters", "balance":"Balance",
                        "deviation_disco_fair":"$\Delta DISCO$", "deviation_balance_fair":"$\Delta Balance$",
                        "diff_n_clusters" : "$\Delta Clunum$"}
@@ -190,9 +213,23 @@ def plot_filtered_skyline(
 
    # fig_legend = plt.figure(figsize=(10,2))
     # --
+    method_display_names = {
+    "DBSCAN": "DBSCAN",
+    "HDBSCAN": "HDBSCAN",
+    "KMeans": r"$k$-Means",
+    "FairDen": "FairDen",
+    "FairSC": "FairSC",
+    "Fairlets": "Fairlets",
+    "SFC": "SFC",
+    "GT_Fair": "GT_Fair",
+    "GT_Unfair": "GT_Unfair",
+    }
     handle_dict = dict(zip(labels,handles))
     ordered_handles = [handle_dict[m] for m in method_order if m in handle_dict]
-    ordered_labels = [m for m in method_order if m in handle_dict]
+    ordered_labels = [method_display_names.get(m, m) for m in method_order if m in handle_dict]
+    #handle_dict = dict(zip(labels,handles))
+    #ordered_handles = [handle_dict[m] for m in method_order if m in handle_dict]
+    #ordered_labels = [m for m in method_order if m in handle_dict]
     # --
 
     fig_legend = plt.figure(figsize=(2,1))
@@ -456,9 +493,20 @@ def plot_line(
             handles, labels = ax.get_legend_handles_labels()
 
             # --
+            method_display_names = {
+                "DBSCAN": "DBSCAN",
+                "HDBSCAN": "HDBSCAN",
+                "KMeans": r"$k$-Means",
+                "FairDen": "FairDen",
+                "FairSC": "FairSC",
+                "Fairlets": "Fairlets",
+                "SFC": "SFC",
+                "GT_Fair": "GT_Fair",
+                "GT_Unfair": "GT_Unfair",
+            }
             handle_dict = dict(zip(labels,handles))
             ordered_handles = [handle_dict[m] for m in method_order if m in handle_dict]
-            ordered_labels = [m for m in method_order if m in handle_dict]
+            ordered_labels = [method_display_names.get(m, m) for m in method_order if m in handle_dict]
 
 
             # --

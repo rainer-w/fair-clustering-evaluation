@@ -136,7 +136,7 @@ def main_8(run=True,plot=True):
             deviations_df = summarize_gt_deviations(stacked_map[i].copy(), gt_rows)
            # print(deviations_df)
             plot_filtered_skyline(full_df,x="disco",x_threshold=-1.0, path=f"{path}Setting_{i}_",
-                                  xlim = (-1,1), ylim = (0,1.05))
+                                  xlim = (-0.1,0.8), ylim = (0.2,1.05))
 
             plot_filtered_skyline(deviations_df, x="deviation_disco_fair", path=f"{path}Setting_{i}_deviations_",
                                   xlim = (-0.4,0.3), ylim = (-0.65,0.05), y="deviation_balance_fair", balance_threshold=-1)

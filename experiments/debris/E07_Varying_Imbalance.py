@@ -88,18 +88,18 @@ def main_7(run=True,plot=True):
             opt_dfs = []
         
             for i,distr in enumerate([
-                #[[0.5,0.5], [0.5,0.5]], 
-                #[[0.6,0.4], [0.4,0.6]], 
-                #[[0.7, 0.3], [0.3, 0.7]], 
-                #[[0.8,0.2], [0.2,0.8]], 
-                #[[1.0, 0.0], [0.0, 1.0]], 
+                [[0.5,0.5], [0.5,0.5]], 
+                [[0.6,0.4], [0.4,0.6]], 
+                [[0.7, 0.3], [0.3, 0.7]], 
+                [[0.8,0.2], [0.2,0.8]], 
+                [[1.0, 0.0], [0.0, 1.0]], 
 
 
-                #[[0.8,0.2], [0.8,0.2]], 
+                [[0.8,0.2], [0.8,0.2]], 
                 [[0.75,0.25], [0.85,0.15]], 
-                #[[0.7, 0.3], [0.9, 0.1]], 
-                #[[0.65,0.35], [0.95,0.05]], 
-                #[[0.6, 0.4], [1.0, 0.0]],
+                [[0.7, 0.3], [0.9, 0.1]], 
+                [[0.65,0.35], [0.95,0.05]], 
+                [[0.6, 0.4], [1.0, 0.0]],
             ]) :
 
                 opt_df,all_df = run_7(path,DIM,CLUNUM,seed,CORE_NUM,RATIO_NOISE,G,distr,n=1000, distr_index=i)
@@ -120,13 +120,13 @@ def main_7(run=True,plot=True):
     avg_results, gt_results = aggregate_over_seeds(
     base_path, seeds = SEEDS, group_cols= ["distr_index", "method", "criterion"]
     )
+
     x_split = 5
     avg_A = avg_results[avg_results["distr_index"] < x_split].copy()
     avg_B = avg_results[avg_results["distr_index"] >= x_split].copy()
     gt_results = gt_results.loc[:, ~gt_results.columns.duplicated()]
     gt_A = gt_results[gt_results["distr_index"] < x_split].copy() 
     gt_B = gt_results[gt_results["distr_index"] >= x_split].copy() 
-
     plot_line(avg_A, x="distr_index", tick_labels=["A0", "A1", "A2", "A3", "A4"], path=f"{base_path}A_", categorical=True, groundtruth_results=gt_A, include_std=True, xlabel="Subgroup Imbalance Level")
     plot_line(avg_B, x="distr_index",tick_labels=["B0", "B1", "B2", "B3", "B4"], path=f"{base_path}B_", categorical=True, groundtruth_results=gt_B, include_std=True, xlabel="Subgroup Imbalance Level")
 if __name__ == "__main__":
