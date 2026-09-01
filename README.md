@@ -133,10 +133,11 @@ The following table maps each figure in the paper to the corresponding scripts a
 
 | Paper Component | Description | Experiment Script | Output Location |
 |---|---|---|---|
-| Fig. 1 | Sensitive Feature Correlations | `experiments/realworld/sensitive_feature_correlations.py` | `results/realworld/correlations/` |
-| Fig. 2 | DEBRIS showcase | `figures/generate_debris_example.py` | `figures/` |
-| Fig. 3 | DEBRIS Cost of Fairness | `experiments/debris/E01_GT_Fairness.py` | `results/debris/Experiment1/` |
-| Fig. 4 | Fairness Aware vs Unaware | `experiments/realworld/ablation_fairness_awareness.py` | `results/realworld/fairness-awareness/` |
+| Tab. 4 | UCI: Fairness Aware vs Unaware | `experiments/realworld/run_all_uci.py` | `results/realworld/{dataset}/.. (table to console)` |
+| Fig. 1 | UCI: Sensitive Feature Correlations | `experiments/realworld/sensitive_feature_correlations.py` | `results/realworld/correlations/` |
+| Fig. 2 | DEBRIS: Showcase | `figures/generate_debris_example.py` | `figures/` |
+| Fig. 3 | DEBRIS: Cost of Fairness | `experiments/debris/E01_GT_Fairness.py` | `results/debris/Experiment1/` |
+| Fig. 4 | UCI: Aware vs Unaware | `experiments/realworld/ablation_fairness_awareness.py` | `results/realworld/fairness-awareness/` |
 | Fig. 5 | DEBRIS Varying Cluster Count| `experiments/debris/E02_Varying_K.py` | `results/debris/Experiment2/` |
 | Fig. 6 | DEBRIS Varying Dimensions| `experiments/debris/E04_Varying_Dim.py` | `results/debris/Experiment4/` |
 | Fig. 7 | DEBRIS Varying Noise| `experiments/debris/E05_Varying_Noise.py` | `results/debris/Experiment5/` |
@@ -145,7 +146,6 @@ The following table maps each figure in the paper to the corresponding scripts a
 | Fig. 10 | DEBRIS Easy vs Challenging| `experiments/debris/E08_Qualitative.py` | `results/debris/Experiment8/` |
 | Fig. 11 | DEBRIS Varying Number of Samples| `experiments/debris/E09_Varying_N.py` | `results/debris/Experiment9/` |
 | Fig. 12 | DEBRIS Varying Sizes of Clusters| `experiments/debris/E010_Varying_Sizes.py` | `results/debris/Experiment10/` |
-| Tab. 4 | Fairness Aware vs Unaware | `experiments/realworld/run_all_uci.py` | `results/realworld/{dataset}/.. (table to console)` |
 
 ---
 
