@@ -6,7 +6,7 @@ from pathlib import Path
 from src.utils.load_uci import load_diabetes, load_adult, load_bank, load_census, load_creditcard
 from src.evaluation.balance import balance_score
 from src.evaluation.disco import disco_score
-
+from experiments.realworld.table_uci import main_table_uci
 dataset_map = {
     "Adult" : load_adult, 
     "Bank": load_bank, 
@@ -156,3 +156,4 @@ def main_all_uci(run=True,plot=True):
 
 if __name__ == "__main__": 
     main_all_uci()
+    main_table_uci()

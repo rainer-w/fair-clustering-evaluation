@@ -137,21 +137,26 @@ figures/
 | Figure generation | `figures/` |
 | Evaluation metrics | `src/evaluation/` |
 
-## Paper ↔ Repository Mapping
+## Figure ↔ Repository Mapping
 
-The following table maps each experimental result or figure in the paper
-to the corresponding scripts and generated outputs in this repository.
+The following table maps each figure in the paper to the corresponding scripts and generated outputs in this repository.
 
 | Paper Component | Description | Experiment Script | Output Location |
 |---|---|---|---|
 | Fig. 1 | Sensitive Feature Correlations | `experiments/realworld/sensitive_feature_correlations.py` | `results/realworld/correlations/..` |
 | Fig. 2 | DEBRIS showcase | `figures/generate_debris_example.py` | `figures/` |
-| Fig. 3 | [Short description] | `experiments/.../....py` | `results/.../` |
+| Fig. 3 | DEBRIS Cost of Fairness | `experiments/debris/E01_GT_Fairness.py` | `results/debris/Experiment1/` |
 | Fig. 4 | Fairness Aware vs Unaware | `experiments/realworld/ablation_fairness_awareness.py` | `results/realworld/fairness-awareness/..` |
-| Table 1 | [Short description] | `experiments/.../....py` | `results/.../` |
-| Table 2 | [Short description] | `experiments/.../....py` | `results/.../` |
-| §4.1 | [Experiment description] | `experiments/.../....py` | `results/.../` |
-| §4.2 | [Experiment description] | `experiments/.../....py` |`results/.../` |
+| Fig. 5 | DEBRIS Varying Cluster Count| `experiments/debris/E02_Varying_K.py` | `results/debris/Experiment2/` |
+| Fig. 6 | DEBRIS Varying Dimensions| `experiments/debris/E04_Varying_Dim.py` | `results/debris/Experiment4/` |
+| Fig. 7 | DEBRIS Varying Noise| `experiments/debris/E05_Varying_Noise.py` | `results/debris/Experiment5/` |
+| Fig. 8 | DEBRIS Varying Sensitive Groups| `experiments/debris/E06_Varying_G.py` | `results/debris/Experiment6/` |
+| Fig. 9 | DEBRIS Varying Imbalance| `experiments/debris/E07_Varying_Imbalance.py` | `results/debris/Experiment7/` |
+| Fig. 10 | DEBRIS Easy vs Challenging| `experiments/debris/E08_Qualitative.py` | `results/debris/Experiment8/` |
+| Fig. 11 | DEBRIS Varying Number of Samples| `experiments/debris/E09_Varying_N.py` | `results/debris/Experiment9/` |
+| Fig. 12 | DEBRIS Varying Sizes of Clusters| `experiments/debris/E010_Varying_Sizes.py` | `results/debris/Experiment10/` |
+| Tab. 4 | Fairness Aware vs Unaware | `experiments/realworld/run_all_uci.py` | `results/realworld/{dataset}/.. (table to console)` |
+
 ---
 
 # DEBRIS Synthetic Data Generator

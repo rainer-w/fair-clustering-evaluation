@@ -5,7 +5,7 @@ from src.evaluation.balance import balance_score
 from src.evaluation.disco import disco_score
 import pandas as pd
 from src.utils.plot import plot_experiment_1
-
+from experiments.debris.cost_of_fairness import main_CoF
 def run_1(path,dim,clunum,seed,core_num,ratio_noise,g,distr, n):
     
     fairdegen = DEBRIS(
@@ -70,3 +70,4 @@ def main_1():
 
 if __name__ == "__main__":
     main_1()
+    main_CoF()
