@@ -126,16 +126,6 @@ Additional figures from the paper can then be generated using the scripts in:
 ```
 figures/
 ```
-# Paper Reproduction Guide
-
-| Paper Component | Repository Location |
-|---|---|
-| UCI experiments | `experiments/realworld/` |
-| DEBRIS experiments | `experiments/debris/` |
-| Other synthetic experiments | `experiments/synthetic/` |
-| DEBRIS generator | `src/generators/debris.py` |
-| Figure generation | `figures/` |
-| Evaluation metrics | `src/evaluation/` |
 
 ## Figure ↔ Repository Mapping
 
