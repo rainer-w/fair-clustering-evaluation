@@ -1230,7 +1230,7 @@ class densityDataGen:
 			y_cluster,
 			self.g,
 			distr=self.distr,
-			seed = seed
+			seed = self.seed
 			)
 		self.subgroup_type = subgroup_type
 
