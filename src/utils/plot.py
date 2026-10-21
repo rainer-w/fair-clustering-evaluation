@@ -1036,7 +1036,7 @@ def plot_feature_sensitive_correlations(
             x,
             pearson[s].values,
             marker=sens_attr_markers[s],
-            linewidth=3,
+            linestyle=None,
             markersize=32,
             label=s,
             color = sens_colors[s]
@@ -1045,7 +1045,7 @@ def plot_feature_sensitive_correlations(
     ax.set_xticks(x + width * (len(sensitive.columns) - 1) / 2)
     ax.set_xticklabels(X.columns, rotation=45, ha="right")
     ax.set_ylabel("Pearson correlation")
-    ax.set_ylim(-1, 1)
+    ax.set_ylim(-0.5, 0.7)
     ax.axhline(0, linewidth=1)
    # ax.set_title("Feature ↔ Sensitive Attribute (Pearson)")
    # ax.legend()
@@ -1094,7 +1094,7 @@ def plot_feature_sensitive_correlations(
             x,
             spearman[s].values,
             marker=sens_attr_markers[s],
-            linewidth=3,
+            linestyle=None,
             markersize=32,
             label=s,
             color = sens_colors[s]
@@ -1148,7 +1148,7 @@ def plot_feature_sensitive_correlations(
             x,
             mi[s].values,
             marker=sens_attr_markers[s],
-            linewidth=3,
+            linestyle=None,
             markersize=32,
             label=s,
             color = sens_colors[s]
