@@ -1,5 +1,6 @@
 from src.evaluation.balance import balance_score
 from src.evaluation.disco import disco_score
+from src.evaluation.dcsi import dcsiscore
 
 from sklearn.metrics import (
     adjusted_rand_score,
@@ -15,17 +16,33 @@ def evaluate_groundtruth(
     fair_gt = fairdegen.get_groundtruth()
     unfair_gt = fairdegen.get_unfair_groundtruth()
 
-    balance_fair = balance_score("test",["sensitive_value"], fair_gt, sensitive)
-    balance_unfair = balance_score("test", ["sensitive_value"], unfair_gt, sensitive)
+    balance_fair, clbal_fair, gbal_fair = balance_score("test",["sensitive_value"], fair_gt, sensitive, per_cluster=True)
+    balance_unfair, clbal_unfair, gbal_unfair = balance_score("test", ["sensitive_value"], unfair_gt, sensitive, per_cluster=True)
+    minbal_fair = (
+        min(clbal_fair.values())
+        if isinstance(clbal_fair, dict) and clbal_fair
+        else 0
+    )
+    minbal_unfair = (
+        min(clbal_unfair.values())
+        if isinstance(clbal_unfair, dict) and clbal_unfair
+        else 0
+    )
     disco_fair = disco_score(features, fair_gt)
     disco_unfair = disco_score(features, unfair_gt)
+    dcsi_fair = dcsiscore(features,fair_gt)
+    dcsi_unfair = dcsiscore(features, unfair_gt)
 
     row = {
         "method" : "GroundTruth",
         "balance_fair" : balance_fair, 
-        "balance_unfair" : balance_unfair, 
+        "minbal_fair" : minbal_fair,
+        "balance_unfair" : balance_unfair,
+        "minbal_unfair" : minbal_unfair, 
         "disco_fair" : disco_fair, 
-        "disco_unfair" : disco_unfair
+        "disco_unfair" : disco_unfair,
+        "dcsi_fair" : dcsi_fair, 
+        "dcsi_unfair" : dcsi_unfair,
     }
     return row
 def evaluate_groundtruth_separate(
@@ -35,20 +52,37 @@ def evaluate_groundtruth_separate(
     sensitive = fairdegen.get_sensitive()
     fair_gt = fairdegen.get_groundtruth()
     unfair_gt = fairdegen.get_unfair_groundtruth()
-    balance_fair = balance_score("test",["sensitive_value"], fair_gt, sensitive)
-    balance_unfair = balance_score("test", ["sensitive_value"], unfair_gt, sensitive)
+    balance_fair, clbal_fair, gbal_fair = balance_score("test",["sensitive_value"], fair_gt, sensitive, per_cluster=True)
+    balance_unfair, clbal_unfair, gbal_unfair = balance_score("test", ["sensitive_value"], unfair_gt, sensitive, per_cluster=True)
+    minbal_fair = min(clbal_fair.values())
+    minbal_fair = (
+        min(clbal_fair.values())
+        if isinstance(clbal_fair, dict) and clbal_fair
+        else 0
+    )
+    minbal_unfair = (
+        min(clbal_unfair.values())
+        if isinstance(clbal_unfair, dict) and clbal_unfair
+        else 0
+    )
+
     disco_fair = disco_score(features, fair_gt)
     disco_unfair = disco_score(features, unfair_gt)
-
+    dcsi_fair = dcsiscore(features,fair_gt)
+    dcsi_unfair = dcsiscore(features, unfair_gt)
     row_fair = {
         "method" : "GT_Fair",
         "balance" : balance_fair, 
+        "minbal" : minbal_fair,
         "disco" : disco_fair,
+        "dcsi" : dcsi_fair,
     }
     row_unfair = {
         "method" : "GT_Unfair",
         "balance" : balance_unfair,
-        "disco" : disco_unfair
+        "minbal" : minbal_unfair,
+        "disco" : disco_unfair,
+        "dcsi" : dcsi_unfair,
     }
     rows = [row_fair,row_unfair]
     return rows
@@ -68,17 +102,26 @@ def add_gt_deviations(df, gt_rows):
     df["delta_balance_fair"] = (
         df["balance"] - gt_fair["balance"]
     )
-
+    df["delta_minbal_fair"] = (
+        df["minbal"] - gt_fair["minbal"]
+    )
     df["delta_disco_fair"] = (
         df["disco"] - gt_fair["disco"]
     )
-
+    df["delta_dcsi_fair"] = (
+        df["dcsi"] - gt_fair["dcsi"]
+    )
     df["delta_balance_unfair"] = (
         df["balance"] - gt_unfair["balance"]
     )
-
+    df["delta_minbal_unfair"] = (
+        df["minbal"] - gt_unfair["minbal"]
+    )
     df["delta_disco_unfair"] = (
         df["disco"] - gt_unfair["disco"]
+    )
+    df["delta_dcsi_unfair"] = (
+        df["dcsi"] - gt_unfair["dcsi"]
     )
 
     return df
@@ -98,40 +141,63 @@ def summarize_gt_deviations(df, gt_rows):
     df["deviation_balance_fair"] = (
         df["balance"] - gt_fair["balance"]
     )
-
+    df["deviation_minbal_fair"] = (
+        df["minbal"] - gt_fair["minbal"]
+    )
     df["deviation_disco_fair"] = (
         df["disco"] - gt_fair["disco"]
     )
-
+    df["deviation_dcsi_fair"] = (
+        df["dcsi"] - gt_fair["dcsi"]
+    )
     df["deviation_balance_unfair"] = (
         df["balance"] - gt_unfair["balance"]
     )
-
+    df["deviation_minbal_unfair"] = (
+        df["minbal"] - gt_unfair["minbal"]
+    )
     df["deviation_disco_unfair"] = (
         df["disco"] - gt_unfair["disco"]
     )
 
+    df["deviation_dcsi_unfair"] = (
+        df["dcsi"] - gt_unfair["dcsi"]
+    )
     summary = (
         df.groupby("method")
         .agg(
             deviation_balance_fair=("deviation_balance_fair", "mean"),
             deviation_balance_fair_std=("deviation_balance_fair", "std"),
 
+            deviation_minbal_fair=("deviation_minbal_fair", "mean"),
+            deviation_minbal_fair_std=("deviation_minbal_fair", "std"),
+
             deviation_disco_fair=("deviation_disco_fair", "mean"),
             deviation_disco_fair_std=("deviation_disco_fair", "std"),
+
+            deviation_dcsi_fair=("deviation_dcsi_fair", "mean"),
+            deviation_dcsi_fair_std=("deviation_dcsi_fair", "std"),
 
             deviation_balance_unfair=("deviation_balance_unfair", "mean"),
             deviation_balance_unfair_std=("deviation_balance_unfair", "std"),
 
+            deviation_minbal_unfair=("deviation_minbal_unfair", "mean"),
+            deviation_minbal_unfair_std=("deviation_minbal_unfair", "std"),
+
             deviation_disco_unfair=("deviation_disco_unfair", "mean"),
             deviation_disco_unfair_std=("deviation_disco_unfair", "std"),
+            
+            deviation_dcsi_unfair=("deviation_dcsi_unfair", "mean"),
+            deviation_dcsi_unfair_std=("deviation_dcsi_unfair", "std"),
         )
         .reset_index()
     )
     gt_diff = pd.DataFrame([{
         "method" : "GT_Unfair",
         "deviation_balance_fair" : gt_unfair["balance"] - gt_fair["balance"], 
-        "deviation_disco_fair" : gt_unfair["disco"] - gt_fair["disco"]
+        "deviation_minbal_fair" : gt_unfair["minbal"] - gt_fair["minbal"],
+        "deviation_disco_fair" : gt_unfair["disco"] - gt_fair["disco"],
+        "deviation_dcsi_fair" : gt_unfair["dcsi"] - gt_fair["dcsi"],
     }])
     summary = pd.concat(
         [summary,gt_diff], ignore_index=True
@@ -148,17 +214,27 @@ def evaluate_clustering(
 	
     ari = adjusted_rand_score(y_true, y_pred)
     nmi = normalized_mutual_info_score(y_true, y_pred)
-    balance = balance_score("notneeded", ["sensitive_value"], y_pred, sensitive)
+    balance, clbal, grpbal = balance_score("notneeded", ["sensitive_value"], y_pred, sensitive, per_cluster=True)
+    minbal = (
+        min(clbal.values())
+        if isinstance(clbal, dict) and clbal
+        else 0
+    )
+
    # print("y_pred = ", y_pred)
     y_pred_arr = np.asarray(y_pred)
   #  print("y_pred_arr = ", y_pred_arr)
     disco = disco_score(X,y_pred)
+    dcsi = dcsiscore(X,y_pred)
+
     row = {
         "method": method,
         "ari": ari,
         "nmi": nmi,
         "disco": disco,
+        "dcsi": dcsi,
         "balance": balance,
+        "minbal" : minbal,
         **params,
         "labels": y_pred,
         #"n_clusters" : len(set(y_pred)) - (1 if -1 in y_pred else 0)
