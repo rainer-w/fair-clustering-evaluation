@@ -93,7 +93,7 @@ def run_rev01(path,dim,clunum,seed,core_num,ratio_noise,g,distr, n, distr_index)
     fairden_df = search_fairden_all(features_wo, y_true, sensitive, k_unfair=k_unfair)
     kmeans_df = search_kmeans_all(features_wo, y_true, sensitive, k_unfair=k_unfair)
 
-    fairsc_df = search_fairsc_all(features_w, y_true, sensitive, k_unfair=k_unfair)
+    fairsc_df = search_fairsc_all(features_wo, y_true, sensitive, k_unfair=k_unfair)
     PQ = (1,2)
     if distr_index > 4: 
         PQ = (1,5)
