@@ -198,7 +198,10 @@ def search_fairsc_all(
         if k_unfair is not None: 
             k_values.append(k_unfair)
         k_values =  sorted(set(k_values))
-
+    print("FairSC input type:", type(X))
+    print("FairSC input shape:", X.shape)
+    if isinstance(X, pd.DataFrame):
+        print("FairSC input columns:", X.columns.tolist())
     results = []
     t_0 = time.perf_counter()
     model = FairSC(data_w_sensitive=X, sens_columns=np.array(sensitive).reshape(-1,1))
