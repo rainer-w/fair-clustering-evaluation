@@ -277,8 +277,412 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-
 def plot_line(
+    results,
+    x,
+    path,
+    tick_labels=None,
+    xlabel=None,
+    categorical=False,
+    groundtruth_results=None,
+    include_std=False,
+    logaxis=None,
+    x_filter=None,
+    metrics= ("runtime","disco","balance") ,#("runtime", "disco", "balance", "dcsi", "minbal"),
+    criteria=None,
+):
+    import re
+    import matplotlib.pyplot as plt
+    import numpy as np
+    import pandas as pd
+    from pathlib import Path
+
+    plt.rcParams.update({
+        "text.usetex": True,
+        "font.size": 60,
+        "axes.labelsize": 60,
+        "axes.titlesize": 60,
+        "xtick.labelsize": 60,
+        "ytick.labelsize": 60,
+        "legend.fontsize": 60,
+    })
+
+    results = results.copy()
+
+    if x not in results.columns:
+        raise ValueError(f"x column {x!r} is missing from results.")
+
+    # ---------------------------------------------------------
+    # Backwards compatibility with older CSV files
+    # ---------------------------------------------------------
+    if "criterion" not in results.columns:
+        results["criterion"] = "legacy"
+
+    # Only plot metrics actually available in this DataFrame.
+    available_metrics = [
+        metric for metric in metrics
+        if metric in results.columns
+    ]
+
+    missing_metrics = set(metrics) - set(available_metrics)
+    if missing_metrics:
+        print(
+            "Skipping metrics not present in results: "
+            f"{sorted(missing_metrics)}"
+        )
+
+    if not available_metrics:
+        raise ValueError(
+            "None of the requested plotting metrics exist in results."
+        )
+
+    # ---------------------------------------------------------
+    # Filtering
+    # ---------------------------------------------------------
+    if x_filter is not None:
+        results = results[results[x].isin(x_filter)].copy()
+
+        if groundtruth_results is not None and x in groundtruth_results.columns:
+            groundtruth_results = groundtruth_results[
+                groundtruth_results[x].isin(x_filter)
+            ].copy()
+
+    # Ground truth is plotted separately, not as a model method.
+    model_results = results[
+        results["method"] != "GroundTruth"
+    ].copy()
+
+    if model_results.empty:
+        print("Warning: no model results available to plot.")
+
+    x_values = sorted(model_results[x].dropna().unique())
+
+    if not x_values:
+        x_values = sorted(results[x].dropna().unique())
+
+    if categorical:
+        x_map = {value: i for i, value in enumerate(x_values)}
+    else:
+        x_map = None
+
+    if xlabel is None:
+        xlabel = x
+
+    # ---------------------------------------------------------
+    # Method styling
+    # ---------------------------------------------------------
+    method_order = [
+        "GT_Fair",
+        "GT_Unfair",
+        "DBSCAN",
+        "HDBSCAN",
+        "KMeans",
+        "FairDen",
+        "FairSC",
+        "Fairlets",
+        "SFC",
+        "Backurs",
+    ]
+
+    method_markers = {
+        "DBSCAN": "^",
+        "HDBSCAN": "v",
+        "FairDen": "D",
+        "Fairlets": "8",
+        "SFC": "H",
+        "KMeans": "o",
+        "FairSC": "s",
+        "Backurs": "P",
+        "GT_Fair": "*",
+        "GT_Unfair": "X",
+    }
+
+    method_linestyles = {
+        "DBSCAN": "-",
+        "HDBSCAN": "--",
+        "FairDen": ":",
+        "KMeans": "-.",
+        "Fairlets": (0, (4, 1, 1)),
+        "SFC": "-",
+        "FairSC": (0, (3, 1, 1, 1)),
+        "Backurs": (0, (5, 2)),
+        "GT_Fair": "None",
+        "GT_Unfair": "None",
+    }
+
+    method_colors = {
+        "DBSCAN": "#9467bd",
+        "HDBSCAN": "#6a51a3",
+        "KMeans": "#1f77b4",
+        "FairDen": "#2ca02c",
+        "FairSC": "#66a61e",
+        "Fairlets": "tab:olive",
+        "SFC": "#1b9e77",
+        "Backurs": "#d95f02",
+        "GT_Fair": "#222222",
+        "GT_Unfair": "#777777",
+    }
+
+    method_display_names = {
+        "DBSCAN": "DBSCAN",
+        "HDBSCAN": "HDBSCAN",
+        "KMeans": r"$k$-Means",
+        "FairDen": "FairDen",
+        "FairSC": "FairSC",
+        "Fairlets": "Fairlets",
+        "SFC": "SFC",
+        "Backurs": "Backurs",
+        "GT_Fair": "GT_Fair",
+        "GT_Unfair": "GT_Unfair",
+    }
+
+    # Include methods not explicitly styled above instead of crashing.
+    extra_methods = sorted(
+        set(model_results["method"].dropna()) - set(method_order)
+    )
+    method_order += extra_methods
+
+    # ---------------------------------------------------------
+    # Discover selection criteria
+    # ---------------------------------------------------------
+    available_criteria = [
+        c for c in model_results["criterion"].dropna().unique()
+    ]
+
+    if criteria is not None:
+        criteria_to_plot = [
+            c for c in criteria if c in available_criteria
+        ]
+
+        missing_criteria = set(criteria) - set(criteria_to_plot)
+        if missing_criteria:
+            print(
+                "Skipping criteria not present in results: "
+                f"{sorted(missing_criteria)}"
+            )
+    else:
+        criteria_to_plot = available_criteria
+
+    if not criteria_to_plot:
+        # Allows plotting legacy results that have no criterion metadata.
+        criteria_to_plot = ["legacy"]
+        model_results["criterion"] = "legacy"
+
+    plt_map = {
+        None: plt.plot,
+        "x": plt.semilogx,
+        "y": plt.semilogy,
+        "xy": plt.loglog,
+    }
+
+    if logaxis not in plt_map:
+        raise ValueError(
+            "logaxis must be None, 'x', 'y', or 'xy'."
+        )
+
+    metric_to_label = {
+        "disco": "DISCO",
+        "dcsi": "DCSI",
+        "balance": "Balance",
+        "minbal": "Minimum Balance",
+        "runtime": "Runtime (s)",
+        "score": "Score",
+    }
+
+    # ---------------------------------------------------------
+    # Plot every metric for every available criterion
+    # ---------------------------------------------------------
+    for criterion in criteria_to_plot:
+        criterion_df = model_results[
+            model_results["criterion"] == criterion
+        ].copy()
+
+        for metric in available_metrics:
+            # Ground truth only has reference values for certain metrics.
+            gt_fair_col = f"{metric}_fair"
+            gt_unfair_col = f"{metric}_unfair"
+
+            plot_func = plt_map["y"] if metric == "runtime" else plt_map[logaxis]
+
+            fig, ax = plt.subplots(
+                figsize=(14, 12),
+                constrained_layout=True,
+            )
+
+            # Ground-truth reference lines
+            if (
+                groundtruth_results is not None
+                and metric in ("disco", "balance")
+                and x in groundtruth_results.columns
+            ):
+                gt = groundtruth_results.sort_values(x).copy()
+
+                if gt_fair_col in gt.columns:
+                    gt = gt.dropna(subset=[gt_fair_col])
+
+                    gt_x = (
+                        gt[x].map(x_map).to_numpy()
+                        if categorical else gt[x].to_numpy()
+                    )
+                    gt_y = gt[gt_fair_col].to_numpy()
+
+                    plot_func(
+                        gt_x,
+                        gt_y,
+                        marker=method_markers["GT_Fair"],
+                        label="GT_Fair",
+                        linestyle=method_linestyles["GT_Fair"],
+                        color=method_colors["GT_Fair"],
+                        markersize=20,
+                        linewidth=3,
+                    )
+
+                    std_col = f"{gt_fair_col}_std"
+                    if include_std and std_col in gt.columns:
+                        std = gt[std_col].fillna(0).to_numpy()
+                        ax.fill_between(
+                            gt_x, gt_y - std, gt_y + std,
+                            color=method_colors["GT_Fair"],
+                            alpha=0.15,
+                        )
+
+                if gt_unfair_col in gt.columns:
+                    gt = gt.dropna(subset=[gt_unfair_col])
+
+                    gt_x = (
+                        gt[x].map(x_map).to_numpy()
+                        if categorical else gt[x].to_numpy()
+                    )
+                    gt_y = gt[gt_unfair_col].to_numpy()
+
+                    plot_func(
+                        gt_x,
+                        gt_y,
+                        marker=method_markers["GT_Unfair"],
+                        label="GT_Unfair",
+                        linestyle=method_linestyles["GT_Unfair"],
+                        color=method_colors["GT_Unfair"],
+                        markersize=20,
+                        linewidth=3,
+                    )
+
+                    std_col = f"{gt_unfair_col}_std"
+                    if include_std and std_col in gt.columns:
+                        std = gt[std_col].fillna(0).to_numpy()
+                        ax.fill_between(
+                            gt_x, gt_y - std, gt_y + std,
+                            color=method_colors["GT_Unfair"],
+                            alpha=0.15,
+                        )
+
+            # Model lines
+            for method in method_order:
+                subdf = criterion_df[
+                    criterion_df["method"] == method
+                ].sort_values(x).copy()
+
+                if subdf.empty or metric not in subdf.columns:
+                    continue
+
+                # Avoid connecting duplicate x-values if there are any.
+                # Normally selection should already give one row per x/method.
+                subdf = subdf.dropna(subset=[metric])
+
+                if subdf.empty:
+                    continue
+
+                xs = (
+                    subdf[x].map(x_map).to_numpy()
+                    if categorical else subdf[x].to_numpy()
+                )
+                ys = subdf[metric].to_numpy()
+
+                color = method_colors.get(method, None)
+                marker = method_markers.get(method, "o")
+                linestyle = method_linestyles.get(method, "-")
+
+                plot_func(
+                    xs,
+                    ys,
+                    label=method_display_names.get(method, method),
+                    marker=marker,
+                    linestyle=linestyle,
+                    color=color,
+                    markersize=20,
+                    linewidth=3,
+                    alpha=0.9,
+                )
+
+                std_col = f"{metric}_std"
+                if include_std and std_col in subdf.columns:
+                    std = subdf[std_col].fillna(0).to_numpy()
+                    ax.fill_between(
+                        xs,
+                        ys - std,
+                        ys + std,
+                        color=color,
+                        alpha=0.15,
+                    )
+
+            # Axis labels and ticks
+            ax.set_xlabel(rf"\texttt{{{xlabel}}}")
+            metric_label = metric_to_label.get(metric, metric)
+            ax.set_ylabel(rf"\texttt{{{metric_label}}}")
+
+            if categorical:
+                ax.set_xticks(range(len(x_values)))
+
+                if tick_labels is not None:
+                    if len(tick_labels) != len(x_values):
+                        print(
+                            f"Warning: {len(tick_labels)} tick labels "
+                            f"for {len(x_values)} x values."
+                        )
+                    else:
+                        ax.set_xticklabels(tick_labels)
+                else:
+                    ax.set_xticklabels([str(v) for v in x_values])
+            elif tick_labels is not None:
+                ax.set_xticks(tick_labels)
+            else:
+                ax.set_xticks(x_values)
+
+            # Save a separate legend for this metric/criterion.
+            handles, labels = ax.get_legend_handles_labels()
+            if handles:
+                fig_legend = plt.figure(figsize=(10, 2))
+                fig_legend.legend(
+                    handles,
+                    labels,
+                    loc="center",
+                    ncol=min(5, len(labels)),
+                    frameon=False,
+                    fontsize=16,
+                    markerscale=0.6,
+                    handlelength=1.5,
+                    handletextpad=0.4,
+                    columnspacing=1.0,
+                )
+
+                criterion_slug = re.sub(
+                    r"[^A-Za-z0-9_-]+", "_", str(criterion)
+                )
+                fig_legend.savefig(
+                    f"{path}legend_{metric}_{criterion_slug}.pdf",
+                    bbox_inches="tight",
+                )
+                plt.close(fig_legend)
+
+            criterion_slug = re.sub(
+                r"[^A-Za-z0-9_-]+", "_", str(criterion)
+            )
+            fig.savefig(
+                f"{path}{metric}_for_opt_{criterion_slug}.pdf",
+                bbox_inches="tight",
+            )
+            plt.close(fig)
+
+def prerevision_plot_line(
     results,
     x,
     path,
