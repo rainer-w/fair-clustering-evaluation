@@ -108,7 +108,7 @@ def run_rev01(path,dim,clunum,seed,core_num,ratio_noise,g,distr, n, distr_index)
     stacked["distr_index"] =  distr_index
     stacked["distr"] = str(distr)
 
-    groundtruth_eval = evaluate_groundtruth(fairdegen)
+    groundtruth_eval = pd.DataFrame(evaluate_groundtruth(fairdegen))
     groundtruth_eval["distr_index"] = distr_index
     groundtruth_eval["distr"] = str(distr)
     stacked = pd.concat(
