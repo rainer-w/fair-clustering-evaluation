@@ -11,7 +11,8 @@ from collections import Counter
 from collections import deque
 from numpy.random import PCG64
 from scipy.stats import multivariate_t, multivariate_normal
-
+import numpy as np
+from scipy.special import softmax
 
 main_generator = np.random.Generator(PCG64(0))
 np_data_generator = np.random.Generator(PCG64(0))
@@ -75,11 +76,12 @@ def t_ball_num(center, radius, d, n, clunum, df, seed):
 	x[:, -1] = clunum
 	return x
 class DEBRIS: 
-	def __init__(self, dim, clunum, core_num, ratio_noise, seed, g, distr, gap =2, clu_ratios=None): 
+	def __init__(self, dim, clunum, core_num, ratio_noise, seed, g, distr, gap =2, clu_ratios=None, sensitive_assignment="subgroup", sens_correlation_strength=1.0): 
 		cluster_ratios = clu_ratios
 		if cluster_ratios is None:
 			cluster_ratios = np.ones(clunum) / clunum
-		self.gen = densityDataGen(dim=dim, clunum=clunum, core_num=core_num, ratio_noise=ratio_noise, seed=seed, g=g, distr=distr, gap = gap, clu_ratios=cluster_ratios)
+		self.gen = densityDataGen(dim=dim, clunum=clunum, core_num=core_num, ratio_noise=ratio_noise, seed=seed, g=g, distr=distr, gap = gap, clu_ratios=cluster_ratios,
+		                          sensitive_assignment=sensitive_assignment, sens_correlation_strength=sens_correlation_strength)
 	def generate_data(self, data_num, center=True, non_zero=True, seed=None, equal=True): 
 		self.gen.generate_data(data_num=data_num, center=center, non_zero=non_zero, seed=seed, equal=equal)
 		self.core_subgroup = self.gen.core_subgroup
@@ -111,7 +113,8 @@ class densityDataGen:
 				 radius=1, step=1, ratio_con=0, connections=0, seed=0, dens_factors=False, momentum=0.5,
 				 con_momentum=0.9, min_dist=1.1, con_min_dist=0.9, step_spread=0, max_retry=5, verbose=False,
 				 safety=True, con_dens_factors=False, con_radius=2, con_step=2,  star=0, square=False,
-				 random_start=False, distribution=None, pos=None, con_distribution=None , g:int=2, distr = [[0.55,0.45], [0.45,0.55]], gap = 2):
+				 random_start=False, distribution=None, pos=None, con_distribution=None , g:int=2, distr = [[0.55,0.45], [0.45,0.55]], gap = 2,
+				 sensitive_assignment="subgroup", sens_correlation_strength=1.0):
 		"""
 		For extensive parameter explanations, please consult the GitHub README
 		:param dim: dimensionality
@@ -150,6 +153,8 @@ class densityDataGen:
 		self.core_subgroup = {}
 		self.distr = distr
 		self.gap = gap
+		self.sensitive_assignment = sensitive_assignment
+		self.sens_correlation_strength = sens_correlation_strength
 
 		#print("CLU RATIOS ", clu_ratios)
 		self.seed = seed
@@ -1069,6 +1074,46 @@ class densityDataGen:
 
 		return True
 
+	
+
+
+	def assign_sensitive_attributes_feature_probabilistic(
+		self,
+		X,
+		n_sensitive_values=2,
+		strength=1.0,
+		seed=None,
+	):
+		if n_sensitive_values < 2:
+			raise ValueError("n_sensitive_values must be at least 2")
+
+		rng = np.random.default_rng(seed)
+
+		# Standardize all features.
+		X_scaled = (
+			(X - X.mean(axis=0))
+			/ (X.std(axis=0) + 1e-12)
+		)
+
+		# One weight vector per sensitive category.
+		weights = rng.normal(
+			size=(X.shape[1], n_sensitive_values)
+		)
+		weights /= np.sqrt(X.shape[1])
+
+		# Feature-dependent scores for each category.
+		scores = strength * (X_scaled @ weights)
+
+		# Convert scores into category probabilities.
+		probabilities = softmax(scores, axis=1)
+
+		# Sample one category for each observation.
+		sensitive = np.array([
+			rng.choice(n_sensitive_values, p=row)
+			for row in probabilities
+		])
+
+		return sensitive
 
 	def generate_data(self, data_num, center=True, non_zero=True, seed=None, equal=True):
 		"""
@@ -1224,15 +1269,23 @@ class densityDataGen:
 		y_cluster = np.array(y_cluster)
 		y_subgroup=np.array(y_subgroup)
 		
-
-		sens, subgroup_type = self.assign_sensitive_attributes_w_exact_distr(
-			y_subgroup,
-			y_cluster,
-			self.g,
-			distr=self.distr,
-			seed = seed
+		if self.sensitive_assignment == "subgroup":
+			sens, subgroup_type = self.assign_sensitive_attributes_w_exact_distr(
+				y_subgroup,
+				y_cluster,
+				self.g,
+				distr=self.distr,
+				seed = seed
+				)
+			self.subgroup_type = subgroup_type
+		if self.sensitive_assignment == "feature_correlated":
+			sens = self.assign_sensitive_attributes_feature_probabilistic(
+				X,
+				n_sensitive_values=self.g,
+				strength=self.sens_correlation_strength,
+				seed=seed,
 			)
-		self.subgroup_type = subgroup_type
+			self.subgroup_type = None
 
 		idx_structured = np.where(np.array(y_cluster) != -1)[0]
 		idx_noise = np.where(np.array(y_cluster) == -1)[0]
