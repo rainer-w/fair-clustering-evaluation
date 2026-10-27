@@ -76,7 +76,7 @@ def t_ball_num(center, radius, d, n, clunum, df, seed):
 	x[:, -1] = clunum
 	return x
 class DEBRIS: 
-	def __init__(self, dim, clunum, core_num, ratio_noise, seed, g, distr, gap =2, clu_ratios=None, sensitive_assignment="subgroup", sens_correlation_strength=1.0): 
+	def __init__(self, dim, clunum, core_num, ratio_noise, seed, g=2, distr=[[0.5,0.5],[0.5,0.5]], gap =2, clu_ratios=None, sensitive_assignment="subgroup", sens_correlation_strength=1.0): 
 		cluster_ratios = clu_ratios
 		if cluster_ratios is None:
 			cluster_ratios = np.ones(clunum) / clunum
