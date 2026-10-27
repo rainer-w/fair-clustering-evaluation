@@ -191,6 +191,58 @@ def run_weighting_ablation(
     base_path = Path(base_path)
     selected_rows = []
 
+    METHOD_MARKERS = {
+        "DBSCAN": "^",
+        "HDBSCAN": "v",
+        "FairDen": "D",
+        "Fairlets": "8",
+        "SFC": "H",
+        "KMeans": "o",
+        "FairSC": "s",
+        "Backurs": "P",
+        "GT_Fair": "*",
+        "GT_Unfair": "X",
+    }
+
+    METHOD_LINESTYLES = {
+        "DBSCAN": "-",
+        "HDBSCAN": "--",
+        "FairDen": ":",
+        "KMeans": "-.",
+        "Fairlets": (0, (4, 1, 1)),
+        "SFC": "-",
+        "FairSC": (0, (3, 1, 1, 1)),
+        "Backurs": (0, (5, 2)),
+        "GT_Fair": "None",
+        "GT_Unfair": "None",
+    }
+
+    METHOD_COLORS = {
+        "DBSCAN": "#9467bd",
+        "HDBSCAN": "#6a51a3",
+        "KMeans": "#1f77b4",
+        "FairDen": "#2ca02c",
+        "FairSC": "#66a61e",
+        "Fairlets": "tab:olive",
+        "SFC": "#1b9e77",
+        "Backurs": "#d95f02",
+        "GT_Fair": "#222222",
+        "GT_Unfair": "#777777",
+    }
+
+    METHOD_DISPLAY_NAMES = {
+        "DBSCAN": "DBSCAN",
+        "HDBSCAN": "HDBSCAN",
+        "KMeans": r"$k$-Means",
+        "FairDen": "FairDen",
+        "FairSC": "FairSC",
+        "Fairlets": "Fairlets",
+        "SFC": "SFC",
+        "Backurs": "Backurs",
+        "GT_Fair": "GT_Fair",
+        "GT_Unfair": "GT_Unfair",
+    }
+
     # Load the original candidate archive for every seed.
     for seed in seeds:
         candidate_path = base_path / str(seed) / "candidates"
@@ -311,9 +363,12 @@ def run_weighting_ablation(
                 line, = ax.plot(
                     x,
                     y,
-                    marker="o",
+                    label=METHOD_DISPLAY_NAMES.get(method, method),
+                    marker=METHOD_MARKERS.get(method, "o"),
+                    linestyle=METHOD_LINESTYLES.get(method, "-"),
+                    color=METHOD_COLORS.get(method),
+                    markersize=10,
                     linewidth=2,
-                    label=method,
                 )
 
                 std_col = f"{metric}_std"
@@ -333,7 +388,7 @@ def run_weighting_ablation(
             ax.set_xlim(0, 1)
             ax.set_xticks(balance_weights)
             ax.grid(True, alpha=0.25)
-            ax.legend()
+            #ax.legend()
 
             fig.tight_layout()
             fig.savefig(
@@ -344,7 +399,7 @@ def run_weighting_ablation(
             plt.close(fig)
 
     return selected, summary
-def main_rev01(run=True, plot=True):
+def main_rev01(run=True, plot=True, run_ablation=True):
     SEEDS = [11, 22, 33, 44, 55]
     DIM = 10
     RATIO_NOISE = 0.05
@@ -459,37 +514,37 @@ def main_rev01(run=True, plot=True):
     ]
     gt_A = gt_results[gt_results["distr_index"] < x_split].copy()
     gt_B = gt_results[gt_results["distr_index"] >= x_split].copy()
+    if plot:
+        plot_line(
+            avg_A,
+            x="distr_index",
+            tick_labels=["A0", "A1", "A2", "A3", "A4"],
+            path=f"{base_path}/A_",
+            categorical=True,
+            groundtruth_results=gt_A,
+            include_std=True,
+            xlabel="Subgroup Imbalance Level",
+            metrics=["disco", "dcsi", "balance", "minbal", "runtime"],
+        )
 
-    plot_line(
-        avg_A,
-        x="distr_index",
-        tick_labels=["A0", "A1", "A2", "A3", "A4"],
-        path=f"{base_path}/A_",
-        categorical=True,
-        groundtruth_results=gt_A,
-        include_std=True,
-        xlabel="Subgroup Imbalance Level",
-        metrics=["disco", "dcsi", "balance", "minbal", "runtime"],
-    )
-
-    plot_line(
-        avg_B,
-        x="distr_index",
-        tick_labels=["B0", "B1", "B2", "B3", "B4"],
-        path=f"{base_path}/B_",
-        categorical=True,
-        groundtruth_results=gt_B,
-        include_std=True,
-        xlabel="Subgroup Imbalance Level",
-        metrics=["disco", "dcsi", "balance", "minbal", "runtime"],
-    )
-
-    ablation_selected, ablation_summary = run_weighting_ablation(
-        base_path=base_path,
-        seeds=SEEDS,
-        balance_weights=np.linspace(0, 1, 11),
-        plot_metrics=("balance", "disco"),
-    )
-    print(ablation_summary.head())
+        plot_line(
+            avg_B,
+            x="distr_index",
+            tick_labels=["B0", "B1", "B2", "B3", "B4"],
+            path=f"{base_path}/B_",
+            categorical=True,
+            groundtruth_results=gt_B,
+            include_std=True,
+            xlabel="Subgroup Imbalance Level",
+            metrics=["disco", "dcsi", "balance", "minbal", "runtime"],
+        )
+    if run_ablation:
+        ablation_selected, ablation_summary = run_weighting_ablation(
+            base_path=base_path,
+            seeds=SEEDS,
+            balance_weights=np.linspace(0, 1, 11),
+            plot_metrics=("balance", "disco", "ari", "nmi", "dcsi"),
+        )
+        print(ablation_summary.head())
 if __name__ == "__main__":
-    main_rev01()
+    main_rev01(run=False,plot=False,run_ablation=True)

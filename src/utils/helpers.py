@@ -225,6 +225,8 @@ def evaluate_clustering(
     y_pred_arr = np.asarray(y_pred)
   #  print("y_pred_arr = ", y_pred_arr)
     disco = disco_score(X,y_pred)
+    #print("Before dcsiscore:", type(X), getattr(X, "shape", None))
+
     dcsi = dcsiscore(X,y_pred)
 
     row = {

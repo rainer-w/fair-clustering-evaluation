@@ -18,8 +18,8 @@ from scipy.sparse.csgraph import minimum_spanning_tree
 
 
 def dcsiscore(data, partition, min_pts=5):
-    print("Inside dcsiscore:", type(data), getattr(data, "shape", None))
-    print("Partition:", type(partition), getattr(partition, "shape", None))
+   # print("Inside dcsiscore:", type(data), getattr(data, "shape", None))
+   # print("Partition:", type(partition), getattr(partition, "shape", None))
     clusters = partition
     for i in range(len(clusters)):
         if np.sum(partition == clusters[i]) == 1:
