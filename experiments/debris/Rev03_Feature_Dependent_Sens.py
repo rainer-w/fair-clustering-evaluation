@@ -14,6 +14,94 @@ from src.utils.search import (
 from src.utils.plot import plot_line
 from src.utils.helpers import aggregate_over_seeds, evaluate_groundtruth
 
+def analyze_sensitive_group_proportions(
+    base_path,
+    seeds,
+    strengths,
+    g,
+):
+    base_path = Path(base_path)
+    rows = []
+
+    # Assumes sensitive labels are 0, ..., g-1.
+    expected_values = list(range(g))
+
+    for seed in seeds:
+        seed_path = base_path / str(seed)
+
+        for strength in strengths:
+            # Matches the filename produced by run_Rev03().
+            data_path = seed_path / f"_strength={strength}_data.csv"
+
+            if not data_path.exists():
+                print(f"Missing data file: {data_path}")
+                continue
+
+            data = pd.read_csv(data_path)
+
+            if "sensitive_value" not in data.columns:
+                raise ValueError(
+                    f"'sensitive_value' not found in {data_path}"
+                )
+
+            sensitive = data["sensitive_value"]
+            counts = sensitive.value_counts().reindex(
+                expected_values, fill_value=0
+            )
+
+            n = len(data)
+
+            for value in expected_values:
+                count = int(counts.loc[value])
+
+                rows.append({
+                    "seed": seed,
+                    "sens_correlation_strength": strength,
+                    "sensitive_value": value,
+                    "count": count,
+                    "proportion": count / n if n > 0 else np.nan,
+                    "n": n,
+                })
+
+    per_seed = pd.DataFrame(rows)
+
+    if per_seed.empty:
+        print("No data files found. Nothing to analyse.")
+        return per_seed, pd.DataFrame()
+
+    # Save the proportions for each individual dataset.
+    per_seed.to_csv(
+        base_path / "sensitive_group_proportions_by_seed.csv",
+        index=False,
+    )
+
+    # Aggregate across seeds for each strength and group.
+    summary = (
+        per_seed.groupby(
+            ["sens_correlation_strength", "sensitive_value"]
+        )["proportion"]
+        .agg(["mean", "std", "count"])
+        .reset_index()
+        .rename(columns={
+            "mean": "mean_proportion",
+            "std": "std_proportion",
+            "count": "n_seeds",
+        })
+    )
+
+    summary.to_csv(
+        base_path / "sensitive_group_proportions_summary.csv",
+        index=False,
+    )
+
+    print("\nSensitive group proportions by seed:")
+    print(per_seed.to_string(index=False))
+
+    print("\nMean and standard deviation across seeds:")
+    print(summary.to_string(index=False))
+
+    return per_seed, summary
+
 
 def run_Rev03(
     path,
@@ -192,6 +280,17 @@ def main_Rev03(run=True, plot=False):
             include_std=True,
         )
 
+    
+    proportions, proportions_summary = (
+        analyze_sensitive_group_proportions(
+            base_path=base_path,
+            seeds=SEEDS,
+            strengths=SENS_STRENGTHS,
+            g=G,
+        )
+    )
+
+
 
 if __name__ == "__main__":
-    main_Rev03()
+    main_Rev03(run=False, plot=True)
