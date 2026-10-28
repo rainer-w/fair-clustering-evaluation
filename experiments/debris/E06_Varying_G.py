@@ -101,6 +101,6 @@ def main_6(run=True,plot=True):
         base_path, seeds = SEEDS, group_cols= ["distr_index", "method", "criterion"]
     )
 
-    plot_line(avg_results, x="distr_index", path=base_path, tick_labels=[2,3,4,5], xlabel="g", categorical=True, groundtruth_results=gt_results, include_std=True)
+    plot_line(avg_results, x="distr_index", path=base_path, tick_labels=[2,3,4,5], xlabel="g", categorical=True, groundtruth_results=gt_results, include_std=True, main_figsize=(12,6))
 if __name__ == "__main__":
-    main_6()
+    main_6(run=False)

@@ -174,9 +174,9 @@ def main_fairness_awareness(run=False,plot=True):
                 elif suffix == "FU": 
                     filter_df = filter_df[filter_df["criterion"] == "disco"]
 
-                plot_filtered_skyline(filter_df, x="n_clusters", path=f"{base_path}{dataset_name}_{suffix}_nclusters_", title_inline=f"{dataset_name} {suffix}")
+                plot_filtered_skyline(filter_df, x="n_clusters", path=f"{base_path}{dataset_name}_{suffix}_nclusters_", title_inline=f"{dataset_name} {suffix}", main_figsize=(10,6))
                 plot_filtered_skyline(filter_df, x="disco", path=f"{base_path}{dataset_name}_{suffix}_",  title_inline=f"{dataset_name} {suffix}",
-                                    xlim = dataset_xlim_disco[dataset_name], ylim=dataset_ylim_balance[dataset_name])
+                                    xlim = dataset_xlim_disco[dataset_name], ylim=dataset_ylim_balance[dataset_name], main_figsize=(10,6))
 
 if __name__ == "__main__":
     main_fairness_awareness()

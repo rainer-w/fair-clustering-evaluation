@@ -54,17 +54,23 @@ def evaluate_groundtruth_separate(
     unfair_gt = fairdegen.get_unfair_groundtruth()
     balance_fair, clbal_fair, gbal_fair = balance_score("test",["sensitive_value"], fair_gt, sensitive, per_cluster=True)
     balance_unfair, clbal_unfair, gbal_unfair = balance_score("test", ["sensitive_value"], unfair_gt, sensitive, per_cluster=True)
-    minbal_fair = min(clbal_fair.values())
-    minbal_fair = (
-        min(clbal_fair.values())
-        if isinstance(clbal_fair, dict) and clbal_fair
-        else 0
-    )
-    minbal_unfair = (
-        min(clbal_unfair.values())
-        if isinstance(clbal_unfair, dict) and clbal_unfair
-        else 0
-    )
+    if isinstance(clbal_fair, dict):
+        minbal_fair = min(clbal_fair.values())
+        minbal_fair = (
+            min(clbal_fair.values())
+            if isinstance(clbal_fair, dict) and clbal_fair
+            else 0
+        )
+    else: 
+        minbal_fair = None
+    if isinstance(clbal_fair, dict):
+        minbal_unfair = (
+            min(clbal_unfair.values())
+            if isinstance(clbal_unfair, dict) and clbal_unfair
+            else 0
+        )
+    else: 
+        minbal_unfair = None
 
     disco_fair = disco_score(features, fair_gt)
     disco_unfair = disco_score(features, unfair_gt)
@@ -86,7 +92,93 @@ def evaluate_groundtruth_separate(
     }
     rows = [row_fair,row_unfair]
     return rows
+
+
 def add_gt_deviations(df, gt_rows):
+    gt_fair = next(row for row in gt_rows if row["method"] == "GT_Fair")
+    gt_unfair = next(row for row in gt_rows if row["method"] == "GT_Unfair")
+
+    df = df.copy()
+
+    metrics = ["balance", "minbal", "disco", "dcsi"]
+
+    for metric in metrics:
+        # Only calculate deviations if the metric is available
+        # in the results and both ground-truth rows.
+        if (
+            metric in df.columns
+            and metric in gt_fair
+            and metric in gt_unfair
+        ):
+            df[f"delta_{metric}_fair"] = (
+                df[metric] - gt_fair[metric]
+            )
+            df[f"delta_{metric}_unfair"] = (
+                df[metric] - gt_unfair[metric]
+            )
+
+    return df
+
+
+def summarize_gt_deviations(df, gt_rows):
+    gt_fair = next(row for row in gt_rows if row["method"] == "GT_Fair")
+    gt_unfair = next(row for row in gt_rows if row["method"] == "GT_Unfair")
+
+    df = df.copy()
+
+    metrics = ["balance", "minbal", "disco", "dcsi"]
+    available_metrics = [
+        metric for metric in metrics
+        if (
+            metric in df.columns
+            and metric in gt_fair
+            and metric in gt_unfair
+        )
+    ]
+
+    # Calculate deviations for available metrics.
+    for metric in available_metrics:
+        df[f"deviation_{metric}_fair"] = (
+            df[metric] - gt_fair[metric]
+        )
+        df[f"deviation_{metric}_unfair"] = (
+            df[metric] - gt_unfair[metric]
+        )
+
+    # Build aggregation dynamically so missing metrics are skipped.
+    agg_dict = {}
+
+    for metric in available_metrics:
+        for reference in ["fair", "unfair"]:
+            col = f"deviation_{metric}_{reference}"
+            agg_dict[col] = (col, "mean")
+            agg_dict[f"{col}_std"] = (col, "std")
+
+    if agg_dict:
+        summary = (
+            df.groupby("method")
+            .agg(**agg_dict)
+            .reset_index()
+        )
+    else:
+        summary = df[["method"]].drop_duplicates().reset_index(drop=True)
+
+    # Add the GT_Unfair vs GT_Fair difference for available metrics.
+    gt_diff_row = {"method": "GT_Unfair"}
+
+    for metric in available_metrics:
+        gt_diff_row[f"deviation_{metric}_fair"] = (
+            gt_unfair[metric] - gt_fair[metric]
+        )
+
+    gt_diff = pd.DataFrame([gt_diff_row])
+
+    summary = pd.concat([summary, gt_diff], ignore_index=True)
+
+    return summary
+
+
+def OLD_add_gt_deviations(df, gt_rows):
     gt_fair = next(
         row for row in gt_rows
         if row["method"] == "GT_Fair"
@@ -102,30 +194,34 @@ def add_gt_deviations(df, gt_rows):
     df["delta_balance_fair"] = (
         df["balance"] - gt_fair["balance"]
     )
-    df["delta_minbal_fair"] = (
-        df["minbal"] - gt_fair["minbal"]
-    )
+    if "minbal" in df.columns:
+        df["delta_minbal_fair"] = (
+            df["minbal"] - gt_fair["minbal"]
+        )
     df["delta_disco_fair"] = (
         df["disco"] - gt_fair["disco"]
     )
-    df["delta_dcsi_fair"] = (
-        df["dcsi"] - gt_fair["dcsi"]
-    )
+    if "dcsi" in df.columns:
+        df["delta_dcsi_fair"] = (
+            df["dcsi"] - gt_fair["dcsi"]
+        )
     df["delta_balance_unfair"] = (
         df["balance"] - gt_unfair["balance"]
     )
-    df["delta_minbal_unfair"] = (
-        df["minbal"] - gt_unfair["minbal"]
-    )
+    if "minbal" in df.columns:
+        df["delta_minbal_unfair"] = (
+            df["minbal"] - gt_unfair["minbal"]
+        )
     df["delta_disco_unfair"] = (
         df["disco"] - gt_unfair["disco"]
     )
-    df["delta_dcsi_unfair"] = (
-        df["dcsi"] - gt_unfair["dcsi"]
-    )
+    if "dcsi" in df.columns:
+        df["delta_dcsi_unfair"] = (
+            df["dcsi"] - gt_unfair["dcsi"]
+        )
 
     return df
-def summarize_gt_deviations(df, gt_rows):
+def OLD_summarize_gt_deviations(df, gt_rows):
     gt_fair = next(
         row for row in gt_rows
         if row["method"] == "GT_Fair"
@@ -141,28 +237,31 @@ def summarize_gt_deviations(df, gt_rows):
     df["deviation_balance_fair"] = (
         df["balance"] - gt_fair["balance"]
     )
-    df["deviation_minbal_fair"] = (
-        df["minbal"] - gt_fair["minbal"]
-    )
+    if "minbal" in df.columns:
+        df["deviation_minbal_fair"] = (
+            df["minbal"] - gt_fair["minbal"]
+        )
     df["deviation_disco_fair"] = (
         df["disco"] - gt_fair["disco"]
     )
-    df["deviation_dcsi_fair"] = (
-        df["dcsi"] - gt_fair["dcsi"]
-    )
+    if "dcsi" in df.columns:
+        df["deviation_dcsi_fair"] = (
+            df["dcsi"] - gt_fair["dcsi"]
+        )
     df["deviation_balance_unfair"] = (
         df["balance"] - gt_unfair["balance"]
     )
-    df["deviation_minbal_unfair"] = (
-        df["minbal"] - gt_unfair["minbal"]
-    )
+    if "minbal" in df.columns:
+        df["deviation_minbal_unfair"] = (
+            df["minbal"] - gt_unfair["minbal"]
+        )
     df["deviation_disco_unfair"] = (
         df["disco"] - gt_unfair["disco"]
     )
-
-    df["deviation_dcsi_unfair"] = (
-        df["dcsi"] - gt_unfair["dcsi"]
-    )
+    if "dcsi" in df.columns:
+        df["deviation_dcsi_unfair"] = (
+            df["dcsi"] - gt_unfair["dcsi"]
+        )
     summary = (
         df.groupby("method")
         .agg(

@@ -92,6 +92,6 @@ def main_5(run=True,plot=True):
     base_path, seeds = SEEDS, group_cols= ["ratio_noise", "method", "criterion"]
     )
    # print("GT RESULTS , ", gt_results)
-    plot_line(avg_results, x="ratio_noise", path=base_path, categorical=True, tick_labels=["0", ".1", ".2", ".3", ".4", ".5"], groundtruth_results=gt_results, include_std=True,x_filter=[0 , 0.1, 0.2, 0.3, 0.4, 0.5])
+    plot_line(avg_results, x="ratio_noise", path=base_path, categorical=True, tick_labels=["0", ".1", ".2", ".3", ".4", ".5"], groundtruth_results=gt_results, include_std=True,x_filter=[0 , 0.1, 0.2, 0.3, 0.4, 0.5], main_figsize=(12,6))
 if __name__ == "__main__":
-    main_5()
+    main_5(run=False)

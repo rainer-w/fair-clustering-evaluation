@@ -94,6 +94,6 @@ def main_4(run=True,plot=True):
     base_path, seeds = SEEDS, group_cols= ["dim", "method", "criterion"]
     )
 
-    plot_line(avg_results, x="dim", path=base_path, categorical=False, groundtruth_results=gt_results, include_std=True, logaxis="x")
+    plot_line(avg_results, x="dim", path=base_path, categorical=False, groundtruth_results=gt_results, include_std=True, logaxis="x", main_figsize=(12,6))
 if __name__ == "__main__":
-    main_4()
+    main_4(run=False)

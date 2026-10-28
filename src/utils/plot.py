@@ -86,7 +86,8 @@ def plot_filtered_skyline(
     xlim=None, 
     ylim=None,
     title_inline=None,
-    y="balance"
+    y="balance",
+    main_figsize = (14, 12),
 ):
 
     plt.rcParams.update({
@@ -101,7 +102,7 @@ def plot_filtered_skyline(
 
 
     fig, ax = plt.subplots(
-        figsize=(14, 12),
+        figsize=main_figsize,
         constrained_layout=True
     )
 
@@ -290,6 +291,7 @@ def plot_line(
     x_filter=None,
     metrics= ("runtime","disco","balance") ,#("runtime", "disco", "balance", "dcsi", "minbal"),
     criteria=None,
+    main_figsize=(14, 12),
 ):
     import re
     import matplotlib.pyplot as plt
@@ -505,7 +507,7 @@ def plot_line(
             plot_func = plt_map["y"] if metric == "runtime" else plt_map[logaxis]
 
             fig, ax = plt.subplots(
-                figsize=(14, 12),
+                figsize=main_figsize,
                 constrained_layout=True,
             )
 

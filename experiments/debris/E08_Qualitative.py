@@ -129,19 +129,19 @@ def main_8(run=True,plot=True):
                                fd.get_core_subgroups(), 
                                alpha_points=0.4,
                                path=f"{path}Setting_{i}_" )
-            plot_filtered_skyline(stacked_map[i], x="n_clusters", path=f"results/debris/Experiment8/Setting_{i}_all_n_clusters_",xlim=0,ylim=0)
+            plot_filtered_skyline(stacked_map[i], x="n_clusters", path=f"results/debris/Experiment8/Setting_{i}_all_n_clusters_",xlim=0,ylim=0, main_figsize=(12,6))
             gt_rows = evaluate_groundtruth_separate(fd)
             full_df = stacked_map[i].copy()
             full_df = pd.concat([full_df, pd.DataFrame(gt_rows)],ignore_index=True)
             deviations_df = summarize_gt_deviations(stacked_map[i].copy(), gt_rows)
            # print(deviations_df)
             plot_filtered_skyline(full_df,x="disco",x_threshold=-1.0, path=f"{path}Setting_{i}_",
-                                  xlim = (-0.1,0.8), ylim = (0.2,1.05))
+                                  xlim = (-0.1,0.8), ylim = (0.2,1.05), main_figsize=(12,6))
 
             plot_filtered_skyline(deviations_df, x="deviation_disco_fair", path=f"{path}Setting_{i}_deviations_",
-                                  xlim = (-0.4,0.3), ylim = (-0.65,0.05), y="deviation_balance_fair", balance_threshold=-1)
+                                  xlim = (-0.4,0.3), ylim = (-0.65,0.05), y="deviation_balance_fair", balance_threshold=-1, main_figsize=(12,6))
 
             full_df["diff_n_clusters"] = full_df["n_clusters"] - 10
-            plot_filtered_skyline(full_df, x="balance", path=f"{path}Setting_{i}_clusterdiff_", y="diff_n_clusters" , ylim=(-0.05,30), xlim = (0.4,1.05))
+            plot_filtered_skyline(full_df, x="balance", path=f"{path}Setting_{i}_clusterdiff_", y="diff_n_clusters" , ylim=(-0.05,30), xlim = (0.4,1.05), main_figsize=(12,6))
 if __name__ == "__main__":
-    main_8()
+    main_8(run=False)

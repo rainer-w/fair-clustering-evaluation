@@ -101,6 +101,6 @@ def main_10(run=True,plot=True):
     base_path, seeds = SEEDS, group_cols= ["a", "method", "criterion"]
     )
 
-    plot_line(avg_results, x="a", path=base_path, categorical=True, xlabel="max core_num variance", groundtruth_results=gt_results, include_std=True)
+    plot_line(avg_results, x="a", path=base_path, categorical=True, xlabel="max core_num variance", groundtruth_results=gt_results, include_std=True, main_figsize=(12,6))
 if __name__ == "__main__":
-    main_10()
+    main_10(run=False)
