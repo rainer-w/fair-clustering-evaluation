@@ -173,8 +173,8 @@ def old_main_rev01(run=True,plot=True):
     gt_results = gt_results.loc[:, ~gt_results.columns.duplicated()]
     gt_A = gt_results[gt_results["distr_index"] < x_split].copy() 
     gt_B = gt_results[gt_results["distr_index"] >= x_split].copy() 
-    plot_line(avg_A, x="distr_index", tick_labels=["A0", "A1", "A2", "A3", "A4"], path=f"{base_path}A_", categorical=True, groundtruth_results=gt_A, include_std=True, xlabel="Subgroup Imbalance Level")
-    plot_line(avg_B, x="distr_index",tick_labels=["B0", "B1", "B2", "B3", "B4"], path=f"{base_path}B_", categorical=True, groundtruth_results=gt_B, include_std=True, xlabel="Subgroup Imbalance Level")
+    plot_line(avg_A, x="distr_index", tick_labels=["A0", "A1", "A2", "A3", "A4"], path=f"{base_path}A_", categorical=True, groundtruth_results=gt_A, include_std=True, xlabel="Subgroup Imbalance Level",main_figsize=(12,6))
+    plot_line(avg_B, x="distr_index",tick_labels=["B0", "B1", "B2", "B3", "B4"], path=f"{base_path}B_", categorical=True, groundtruth_results=gt_B, include_std=True, xlabel="Subgroup Imbalance Level",main_figsize=(12,6))
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -190,7 +190,15 @@ def run_weighting_ablation(
 ):
     base_path = Path(base_path)
     selected_rows = []
-
+    plt.rcParams.update({
+        "text.usetex": True,
+        "font.size": 60,
+        "axes.labelsize": 60,
+        "axes.titlesize": 60,
+        "xtick.labelsize": 60,
+        "ytick.labelsize": 60,
+        "legend.fontsize": 60,
+    })
     METHOD_MARKERS = {
         "DBSCAN": "^",
         "HDBSCAN": "v",
@@ -352,7 +360,7 @@ def run_weighting_ablation(
         distr_df = summary[summary["distr_index"] == distr_index]
 
         for metric in available_metrics:
-            fig, ax = plt.subplots(figsize=(12, 8))
+            fig, ax = plt.subplots(figsize=(12, 6))
 
             for method, subdf in distr_df.groupby("method"):
                 subdf = subdf.sort_values("balance_weight")
@@ -383,10 +391,10 @@ def run_weighting_ablation(
                     )
 
             ax.set_xlabel("Balance weight")
-            ax.set_ylabel(metric.capitalize())
-            ax.set_title(f"Weighting ablation — distribution {distr_index}")
+            ax.set_ylabel(metric.capitalize() if metric != "disco" else "DISCO")
+           # ax.set_title(f"Weighting ablation — distribution {distr_index}")
             ax.set_xlim(0, 1)
-            ax.set_xticks(balance_weights)
+            ax.set_xticks([0.0, 0.5, 1.0])
             ax.grid(True, alpha=0.25)
             #ax.legend()
 
@@ -501,7 +509,7 @@ def main_rev01(run=True, plot=True, run_ablation=True):
         base_path,
         seeds=SEEDS,
         group_cols=["distr_index", "method", "criterion"],
-        metrics=["disco", "dcsi", "balance", "minbal", "runtime"],
+        metrics=["disco", "dcsi", "balance", "minbal", "runtime", "ari"],
     )
 
     x_split = 5
@@ -524,7 +532,8 @@ def main_rev01(run=True, plot=True, run_ablation=True):
             groundtruth_results=gt_A,
             include_std=True,
             xlabel="Subgroup Imbalance Level",
-            metrics=["disco", "dcsi", "balance", "minbal", "runtime"],
+            metrics=["disco", "dcsi", "balance", "minbal", "runtime", "ari"],
+            main_figsize=(12,6),
         )
 
         plot_line(
@@ -536,7 +545,8 @@ def main_rev01(run=True, plot=True, run_ablation=True):
             groundtruth_results=gt_B,
             include_std=True,
             xlabel="Subgroup Imbalance Level",
-            metrics=["disco", "dcsi", "balance", "minbal", "runtime"],
+            metrics=["disco", "dcsi", "balance", "minbal", "runtime", "ari"],
+            main_figsize=(12,6),
         )
     if run_ablation:
         ablation_selected, ablation_summary = run_weighting_ablation(
