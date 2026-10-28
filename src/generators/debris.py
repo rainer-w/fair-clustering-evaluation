@@ -1159,7 +1159,7 @@ class densityDataGen:
 			clu_core_num = len(self.cores[cluid])
 
 			# print(cluid)
-			clu_data_num = int(clu_ratio * data_num)
+			clu_data_num = int(round(clu_ratio * data_num))
 			testsum += clu_data_num
 
 			if equal and clu_core_num != 0: # FIX case where cluster has 0 cores but equal is true
