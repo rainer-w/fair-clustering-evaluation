@@ -278,6 +278,7 @@ def main_Rev03(run=True, plot=False):
             categorical=False,
             groundtruth_results=gt_results,
             include_std=True,
+            main_figsize=(12,6),
         )
 
     
