@@ -1089,7 +1089,7 @@ def plot_fair_clusters(
             Xp[mask,1],
             color=sens_colors[idx],
             alpha=alpha_points,
-            s=700,          # increased marker size
+            s=700,
             label=f"sensitive={s}",
             marker=markers[s]
         )
@@ -1173,7 +1173,7 @@ def plot_fair_clusters(
         handles,
         labels,
         loc="center",
-        ncol=3,
+        ncol=5,
         frameon=False,
         fontsize=16,
         markerscale=0.25,

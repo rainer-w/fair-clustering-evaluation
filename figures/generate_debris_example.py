@@ -7,7 +7,7 @@ if __name__ =="__main__":
     D = 2
     N = 1000
     G = 2
-    SEED = 36
+    SEED = 656
     DISTR = [[0.9,0.1],[0.1,0.9]]
     CORE_NUM = [15]*NUM_CLUSTERS
     N=500
