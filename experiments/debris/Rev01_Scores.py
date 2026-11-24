@@ -389,9 +389,10 @@ def run_weighting_ablation(
                         color=line.get_color(),
                         alpha=0.15,
                     )
-
-            ax.set_xlabel("Balance weight")
-            ax.set_ylabel(metric.capitalize() if metric != "disco" else "DISCO")
+            
+            ax.set_xlabel(rf"\texttt{{{"Balance weight"}}}")
+            metric_capitalized = metric.capitalize() if metric != "disco" else "DISCO"
+            ax.set_ylabel(rf"\texttt{{{metric_capitalized}}}")
            # ax.set_title(f"Weighting ablation — distribution {distr_index}")
             ax.set_xlim(0, 1)
             ax.set_xticks([0.0, 0.5, 1.0])
